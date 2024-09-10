@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <Style x:Key="InfoCard" TargetType="Frame">
+        <Setter Property="HeightRequest" Value="96"></Setter>
+        <Setter Property="WidthRequest" Value="96"></Setter>
+        <Setter Property="CornerRadius" Value="8"></Setter>
+    </Style>
+    <Style x:Key="LabelInfoCard" TargetType="Label">
+        <Setter Property="FontSize" Value="24"></Setter>
+        <Setter Property="LineHeight" Value="16"></Setter>
+        <Setter Property="FontFamily" Value="InterBold"></Setter>
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource White}}"></Setter>
+        <Setter Property="Margin" Value="0"></Setter>
+        <Setter Property="Padding" Value="0"></Setter>
+        <Setter Property="VerticalOptions" Value="EndAndExpand"></Setter>
+    </Style>
+    <Style x:Key="LabelInfoCardUnitMeasurement" TargetType="Label">
+        <Setter Property="FontSize" Value="12"></Setter>
+        <Setter Property="VerticalOptions" Value="End"></Setter>
+        <Setter Property="FontFamily" Value="InterBold"></Setter>
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource White}}"></Setter>
+        <Setter Property="Margin" Value="0,0,0,4"></Setter>
+        <Setter Property="Padding" Value="0"></Setter>
+        <Setter Property="VerticalOptions" Value="EndAndExpand"></Setter>
+    </Style>
+    <Style x:Key="LabelForm" TargetType="Label">
+        <Setter Property="FontSize" Value="16"></Setter>
+        <Setter Property="FontFamily" Value="InterBold"></Setter>
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"></Setter>
+        <Setter Property="Margin" Value="0,0,0,12"></Setter>
+    </Style>
+    <Style x:Key="SubLabelForm" TargetType="Label">
+        <Setter Property="FontSize" Value="12"></Setter>
+        <Setter Property="FontFamily" Value="InterSemiBold"></Setter>
+        <Setter Property="Margin" Value="0,0,0,8"></Setter>
+        <Setter Property="TextColor" Value="{StaticResource Gray600}"></Setter>
+    </Style>
+    <Style x:Key="InputForm" TargetType="Frame">
+        <Setter Property="Padding" Value="8,0"></Setter>
+        <Setter Property="CornerRadius" Value="8"></Setter>
+        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource InputBackground}, Dark={StaticResource InputBackgroundDark}}"></Setter>
+    </Style>
+    <Style TargetType="Entry">
+        <Setter Property="VerticalOptions" Value="Center"></Setter>
+        <Setter Property="HorizontalOptions" Value="FillAndExpand"></Setter>
+        <Setter Property="HeightRequest" Value="40"></Setter>
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"></Setter>
+        <Setter Property="PlaceholderColor" Value="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray600}}"></Setter>
+    </Style>
+    <Style x:Key="InputNumeric" TargetType="Frame">
+        <Setter Property="Padding" Value="8,0"></Setter>
+        <Setter Property="Margin" Value="0"></Setter>
+        <Setter Property="MinimumWidthRequest" Value="32"></Setter>
+        <Setter Property="BackgroundColor" Value="Transparent"></Setter>
+        <Setter Property="BorderColor" Value="Transparent"></Setter>
+    </Style>
+</ResourceDictionary>

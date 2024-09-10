@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:PI_AQP.Views"
+             xmlns:template="clr-namespace:PI_AQP.Templates"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="PI_AQP.Views.UpdateIrrigationRoutinePage"
+             Title="UpdateIrrigationRoutinePage"
+             Style="{StaticResource DefaultPage}">
+    <ContentPage.Behaviors>
+        <toolkit:StatusBarBehavior StatusBarColor="Black" StatusBarStyle="LightContent" />
+    </ContentPage.Behaviors>
+    <ScrollView>
+        <StackLayout Padding="0,0,0,64">
+            <Grid Padding="0,0,0,0" Margin="0">
+                <Image Aspect="Fill" Source="{AppThemeBinding Light='Resources/AppIcon/top_background_miscellaneous_primary.svg', Dark='top_background_miscellaneous_primarydark.svg'}"></Image>
+                <StackLayout VerticalOptions="StartAndExpand"
+                             Padding="32, 16, 0, 0">
+
+                    <StackLayout Spacing="4"
+                                 Orientation="Horizontal"
+                                 VerticalOptions="Center"
+                                 HorizontalOptions="Start">
+                        <Image Aspect="Fill" Source="{AppThemeBinding Light='Resources/AppIcon/logo.svg', Dark='Resources/AppIcon/logo.svg'}" HeightRequest="14"></Image>
+
+                        <Label Text="Aquaponia"
+                               FontSize="14"
+                               FontFamily="InterBold"
+                               TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource White}}"
+                               Padding="0"
+                               Margin="0"></Label>
+                    </StackLayout>
+                </StackLayout>
+            </Grid>
+
+
+
+            <Label Text="ATUALIZAR ROTINA"
+                    FontSize="18"
+                    FontFamily="InterBold"
+                    HorizontalOptions="Center"
+                    TextColor="{StaticResource Primary}"
+                    Margin="0, 32, 0, 24"/>
+
+
+            <StackLayout Margin="32,0,32,0" VerticalOptions="StartAndExpand">
+                <Label Text="Dias da semana"
+                    FontSize="14"
+                    FontFamily="InterBold"
+                    Margin="0, 0, 0, 8"/>
+                
+                <FlexLayout Direction="Row" >
+                    <CollectionView ItemsSource="{Binding listWeekdays}">
+
+                        <CollectionView.ItemsLayout>
+                            <LinearItemsLayout Orientation="Horizontal" ItemSpacing="8" />
+                        </CollectionView.ItemsLayout>
+
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <StackLayout>
+                                    <Button
+                                        CornerRadius="20"
+                                        Text="{Binding Name}"
+                                        Command="{Binding BindingContext.WeekdayOption_Clicked, Source={RelativeSource AncestorType={x:Type CollectionView}}}"
+                                        CommandParameter="{Binding .}"
+                                        BorderWidth="2"
+                                        WidthRequest="40"
+                                        HeightRequest="40">
+
+                                        <Button.Triggers>
+                                            <DataTrigger TargetType="Button"
+                                                        Binding="{Binding IsChecked}"
+                                                        Value="False">
+                                                <Setter Property="BackgroundColor" Value="Transparent" />
+                                                <Setter Property="BorderColor" Value="{StaticResource Primary}" />
+                                                <Setter Property="TextColor" Value="{StaticResource Primary}"/>
+                                            </DataTrigger>
+
+                                            <DataTrigger TargetType="Button"
+                                                        Binding="{Binding IsChecked}"
+                                                        Value="True">
+                                                <Setter Property="BackgroundColor" Value="{StaticResource Primary}"/>
+                                                <Setter Property="BorderColor" Value="{StaticResource Primary}" />
+                                                <Setter Property="TextColor" Value="{StaticResource White}" />
+                                            </DataTrigger>
+                                        </Button.Triggers>
+                                    </Button>
+                                </StackLayout>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </FlexLayout>
+
+                <StackLayout Margin="0,32,0,0" VerticalOptions="StartAndExpand">
+                    <StackLayout>
+
+                        <CollectionView ItemsSource="{Binding listRotinas}"
+                                    ItemTemplate="{StaticResource CreateIrrigationRoutinesViewModel}">
+                            <CollectionView.ItemsLayout>
+                                <LinearItemsLayout Orientation="Vertical" ItemSpacing="8" />
+                            </CollectionView.ItemsLayout>
+
+                            <CollectionView.Header>
+                                <StackLayout>
+                                    <Label Text="Horarios"
+                                        FontFamily="InetrBold"
+                                        TextColor="Black"
+                                        Margin="0,0,0,8"></Label>
+                                </StackLayout>
+                            </CollectionView.Header>
+                        </CollectionView>
+
+                    </StackLayout>
+
+                    <StackLayout 
+                                VerticalOptions="Center"
+                                Orientation="Horizontal" 
+                                HorizontalOptions="End"
+                                Margin="0, 24, 0, 0"
+                                Spacing="8">
+                        <StackLayout Orientation="Horizontal" 
+                                    Spacing="8">
+                            <Label Text="Intervalo" VerticalOptions="Center"/>
+                            <StackLayout VerticalOptions="Center">
+                                <Frame BackgroundColor="#D2D2D2"
+                                       CornerRadius="6">
+                                    <Entry Text="{Binding Intervalo}"
+                                           Keyboard="Numeric"
+                                           x:Name="intervalo"
+                                           WidthRequest="40"
+                                           HeightRequest="32"
+                                           />
+                                </Frame>
+                            </StackLayout>
+                            <Label Text="min" VerticalOptions="Center" />
+                        </StackLayout>
+
+                        <StackLayout HorizontalOptions="Center">
+                            <Button Text="Novo horário"
+                                CornerRadius="30"
+                                BackgroundColor="Transparent"
+                                BorderWidth="1"
+                                VerticalOptions="CenterAndExpand"
+                                BorderColor="{StaticResource Primary}"
+                                TextColor="{StaticResource Primary}"
+                                Command="{Binding BtAdicionar_Clicked}" CommandParameter="{Binding Intervalo}"
+                            ></Button>
+                        </StackLayout>
+                    </StackLayout>
+
+                    <StackLayout Margin="0,40,0,0">
+                        <Button Text="SALVAR"
+                                Command="{Binding BtSaving_Clicked}"
+                            ></Button>
+                    </StackLayout>
+                </StackLayout>
+            </StackLayout>
+        </StackLayout>
+    </ScrollView>
+
+    <ContentPage.Resources>
+        <DataTemplate x:Key="Default">
+            <StackLayout Orientation="Horizontal" Spacing="16">
+                <StackLayout HorizontalOptions="FillAndExpand">
+                    <Label Text="Min" Style="{StaticResource SubLabelForm}"></Label>
+                    <Frame MaximumWidthRequest="164" BackgroundColor="#D2D2D2">
+                        <TimePicker HorizontalOptions="FillAndExpand" Time="{Binding StartTime}" Format="HH:mm" IsEnabled="True"/>
+                    </Frame>
+                </StackLayout>
+                <StackLayout HorizontalOptions="FillAndExpand">
+                    <Label Text="Max" Style="{StaticResource SubLabelForm}"></Label>
+                    <Frame MaximumWidthRequest="164" BackgroundColor="#D2D2D2">
+                        <TimePicker HorizontalOptions="FillAndExpand" Time="{Binding EndTime}" Format="HH:mm" IsEnabled="True"/>
+                    </Frame>
+                </StackLayout>
+            </StackLayout>
+        </DataTemplate>
+
+        <DataTemplate x:Key="CanEditing">
+            <StackLayout Orientation="Horizontal" Spacing="16">
+                <StackLayout HorizontalOptions="FillAndExpand">
+                    <Label Text="Min" Style="{StaticResource SubLabelForm}"></Label>
+                    <Frame  MaximumWidthRequest="164" BackgroundColor="#D2D2D2">
+                        <TimePicker HorizontalOptions="FillAndExpand" Time="{Binding StartTime}" Format="HH:mm" IsEnabled="True"/>
+                    </Frame>
+                </StackLayout>
+                <StackLayout HorizontalOptions="FillAndExpand">
+                    <Label Text="Max" Style="{StaticResource SubLabelForm}"></Label>
+                    <Frame MaximumWidthRequest="164" BackgroundColor="#D2D2D2">
+                        <TimePicker HorizontalOptions="FillAndExpand" Time="{Binding EndTime}" Format="HH:mm" IsEnabled="True"/>
+                    </Frame>
+                </StackLayout>
+                <StackLayout VerticalOptions="Center">
+                    <Button Text="-"
+                        FontFamily="InetrBold"
+                        CornerRadius="100"
+                        BackgroundColor="#3414B6" 
+                        WidthRequest="25"
+                        HeightRequest="25"
+                        HorizontalOptions="CenterAndExpand"
+                        Command="{Binding BindingContext.BtRemover_Clicked, Source={RelativeSource AncestorType={x:Type CollectionView}}}"
+                        CommandParameter="{Binding .}"
+                        Padding="1"/>
+                </StackLayout>
+            </StackLayout>
+        </DataTemplate>
+
+        <DataTemplate x:Key="CanDelete">
+            <StackLayout Orientation="Horizontal" Spacing="16">
+                <StackLayout HorizontalOptions="FillAndExpand">
+                    <Label Text="Min" Style="{StaticResource SubLabelForm}"></Label>
+                    <Frame MaximumWidthRequest="164" BackgroundColor="#D2D2D2">
+                        <TimePicker HorizontalOptions="FillAndExpand" Time="{Binding StartTime}" Format="HH:mm" IsEnabled="False"/>
+                    </Frame>
+                </StackLayout>
+                <StackLayout HorizontalOptions="FillAndExpand">
+                    <Label Text="Max" Style="{StaticResource SubLabelForm}"></Label>
+                    <Frame MaximumWidthRequest="164" BackgroundColor="#D2D2D2">
+                        <TimePicker HorizontalOptions="FillAndExpand" Time="{Binding EndTime}" Format="HH:mm" IsEnabled="False"/>
+                    </Frame>
+                </StackLayout>
+                <StackLayout VerticalOptions="Center">
+                    <Button Text="-"
+                            FontFamily="InetrBold"
+                            CornerRadius="100"
+                            BackgroundColor="#3414B6" 
+                            WidthRequest="25"
+                            HeightRequest="25"
+                            HorizontalOptions="CenterAndExpand"
+                            Command="{Binding BindingContext.BtRemover_Clicked, Source={RelativeSource AncestorType={x:Type CollectionView}}}"
+                            CommandParameter="{Binding .}"
+                            Padding="1"/>
+                </StackLayout>
+            </StackLayout>
+        </DataTemplate>
+        <template:ListTimeWaterPumpTemplate x:Key="CreateIrrigationRoutinesViewModel"
+                                    CanDelete="{StaticResource CanDelete}"
+                                    CanEditing="{StaticResource CanEditing}"
+                                    Default="{StaticResource Default}"/>
+    </ContentPage.Resources>
+</ContentPage>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="PI_AQP.Views.CustomInputTimeView">
+    <ContentView.Resources>
+        <ControlTemplate x:Key="inputTimeDisabled">
+            <StackLayout>
+                <Frame MaximumWidthRequest="164" BackgroundColor="#D2D2D2">
+                    <Label Text="{TemplateBinding Time}" />
+                    <!--<TimePicker HorizontalOptions="FillAndExpand" Time="{TemplateBinding Time}" Format="HH:mm" IsEnabled="False" />-->
+                </Frame>
+            </StackLayout>
+        </ControlTemplate>
+
+        <ControlTemplate x:Key="inputTime">
+            <StackLayout>
+                <Frame MaximumWidthRequest="164" BackgroundColor="#D2D2D2" VerticalOptions="CenterAndExpand">
+                    <TimePicker HorizontalOptions="FillAndExpand" Time="{TemplateBinding Time}" Format="HH:mm" IsEnabled="True"/>
+                </Frame>
+            </StackLayout>
+        </ControlTemplate>
+    </ContentView.Resources>
+</ContentView>

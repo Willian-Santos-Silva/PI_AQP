@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PI_AQP.Views.ConfiguracoesPage"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:views="clr-namespace:PI_AQP.Views"
+             Style="{StaticResource DefaultPage}">
+    <ContentPage.Behaviors>
+        <toolkit:StatusBarBehavior StatusBarColor="Black" StatusBarStyle="LightContent" />
+    </ContentPage.Behaviors>
+
+    <VerticalStackLayout>
+        <Grid Padding="0,0,0,0" Margin="0">
+            <Image Aspect="Fill" Source="{AppThemeBinding Light='Resources/AppIcon/top_background_miscellaneous_primary.svg', Dark='top_background_miscellaneous_primarydark.svg'}"></Image>
+            <StackLayout VerticalOptions="StartAndExpand"
+                             Padding="32, 16, 0, 0">
+
+                <StackLayout Spacing="4"
+                                 Orientation="Horizontal"
+                                 VerticalOptions="Center"
+                                 HorizontalOptions="Start">
+                    <Image Aspect="Fill" Source="{AppThemeBinding Light='Resources/AppIcon/logo.svg', Dark='Resources/AppIcon/logo.svg'}" HeightRequest="14"></Image>
+
+                    <Label Text="Aquaponia"
+                               FontSize="14"
+                               FontFamily="InterBold"
+                               TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource White}}"
+                               Padding="0"
+                               Margin="0"></Label>
+                </StackLayout>
+            </StackLayout>
+        </Grid>
+
+
+        <StackLayout Padding="32" Spacing="32">
+            <StackLayout>
+                <Label Text="Temperatura" Style="{StaticResource LabelForm}"></Label>
+                <HorizontalStackLayout Spacing="32">
+                    <StackLayout Spacing="0">
+                        <Label Text="Min" Style="{StaticResource SubLabelForm}"></Label>
+                        <views:InputNumberView Value="{Binding configuracao.min_temperatura, Mode=TwoWay}"
+                                               IsEditing="False"
+                                               UnitMeasure="ºC"
+                                               CommandSave="{Binding OnSaveChanges}"/>
+                    </StackLayout>
+                    <StackLayout >
+                        <Label Text="Max" Style="{StaticResource SubLabelForm}"></Label>
+                        <views:InputNumberView Value="{Binding configuracao.max_temperatura, Mode=TwoWay}"
+                                               IsEditing="False"
+                                               UnitMeasure="ºC"
+                                               CommandSave="{Binding OnSaveChanges, Mode=TwoWay}"/>
+                    </StackLayout>
+                </HorizontalStackLayout>
+            </StackLayout>
+
+            <StackLayout>
+                <Label Text="Ph" Style="{StaticResource LabelForm}"></Label>
+                <HorizontalStackLayout Spacing="32">
+                    <StackLayout >
+                        <Label Text="Min" Style="{StaticResource SubLabelForm}"></Label>
+                        <views:InputNumberView Value="{Binding configuracao.min_ph, Mode=TwoWay}"
+                                               IsEditing="False" MaxValue="500"
+                                               CommandSave="{Binding OnSaveChanges, Mode=TwoWay}"/>
+                    </StackLayout>
+                    <StackLayout >
+                        <Label Text="Max" Style="{StaticResource SubLabelForm}"></Label>
+                        <views:InputNumberView Value="{Binding configuracao.max_ph, Mode=TwoWay}"
+                                               IsEditing="False"
+                                               CommandSave="{Binding OnSaveChanges, Mode=TwoWay}"/>
+                    </StackLayout>
+                </HorizontalStackLayout>
+            </StackLayout>
+
+            <StackLayout>
+                <Label Text="Dosagem" Style="{StaticResource LabelForm}"></Label>
+                <views:InputNumberView Value="{Binding configuracao.ppm, Mode=TwoWay}"
+                                        IsEditing="False"
+                                       UnitMeasure="ml/L"
+                                       CommandSave="{Binding OnSaveChanges, Mode=TwoWay}"/>
+            </StackLayout>
+        </StackLayout>
+    </VerticalStackLayout>    
+</ContentPage>

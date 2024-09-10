@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="PI_AQP.Views.DiscoveryDevicesPage"
+             Title="DiscoveryDevicesPage"
+             Style="{StaticResource DefaultPage}">
+    <ContentPage.Behaviors>
+        <toolkit:StatusBarBehavior StatusBarColor="Black" StatusBarStyle="LightContent" />
+    </ContentPage.Behaviors>
+    
+    <ScrollView VerticalOptions="FillAndExpand"
+                VerticalScrollBarVisibility="Never"
+                HorizontalScrollBarVisibility="Never">
+        <VerticalStackLayout>
+            <Grid Padding="0,0,0,0" Margin="0">
+                <Image Aspect="Fill" Source="{AppThemeBinding Light='Resources/AppIcon/top_background_miscellaneous_primary.svg', Dark='top_background_miscellaneous_primarydark.svg'}"></Image>
+                <StackLayout VerticalOptions="StartAndExpand"
+                             Padding="32, 16, 0, 0">
+
+                    <StackLayout Spacing="4"
+                                 Orientation="Horizontal"
+                                 VerticalOptions="Center"
+                                 HorizontalOptions="Start">
+                        <Image Aspect="Fill" Source="{AppThemeBinding Light='Resources/AppIcon/logo.svg', Dark='Resources/AppIcon/logo.svg'}" HeightRequest="14"></Image>
+
+                        <Label Text="Aquaponia"
+                               FontSize="14"
+                               FontFamily="InterBold"
+                               TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource White}}"
+                               Padding="0"
+                               Margin="0"></Label>
+                    </StackLayout>
+                </StackLayout>
+            </Grid>
+
+
+            <StackLayout VerticalOptions="CenterAndExpand"
+                         Margin="0,32">
+                <CollectionView x:Name="connectionsList">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Vertical" ItemSpacing="16" />
+                    </CollectionView.ItemsLayout>
+
+                    <CollectionView.Header>
+                        <Label Text="DISPOSITIVOS"
+                               FontFamily="InterBold"
+                               FontAttributes="Bold"
+                               FontSize="16"
+                               Margin="0,0,0,8"
+                               Padding="16, 0"></Label>
+                    </CollectionView.Header>
+
+                    <CollectionView.EmptyView>
+                        <Label Text="Buscando dispositivos."/>
+                    </CollectionView.EmptyView>
+                    
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <StackLayout Padding="16, 8"
+                                         VerticalOptions="Center">
+                                <StackLayout Spacing="16"
+                                             Orientation="Horizontal"
+                                             VerticalOptions="Start">
+                                    <Label Text="wifi"
+                                           FontFamily="GoogleMaterialIcons"
+                                           VerticalOptions="Center"></Label>
+
+                                    <StackLayout Spacing="8">
+                                        <Label Text="{Binding ssid}"
+                                               FontAttributes="Bold"
+                                               FontSize="16"></Label>
+                                        <!--<StackLayout Orientation="Horizontal"
+                                                     Spacing="4">
+                                            <Label Text="Criptografia:"
+                                                   FontAttributes="Bold"
+                                                   FontSize="10"></Label>
+                                            <Label Text="{Binding criptography}"
+                                                   FontAttributes="Bold"
+                                                   FontSize="10"></Label>
+                                        </StackLayout>-->
+                                    </StackLayout>
+                                    <StackLayout HorizontalOptions="EndAndExpand"
+                                                 VerticalOptions="CenterAndExpand">
+                                        <StackLayout Orientation="Horizontal"
+                                                     Spacing="4">
+                                            <Label Text="Sinal:"
+                                                   FontAttributes="Bold"
+                                                   Margin="0,0,0,8"></Label>
+                                            <Label Text="{Binding rssi}"
+                                                   FontAttributes="Bold"
+                                                   Margin="0,0,0,8"></Label>
+                                        </StackLayout>
+                                    </StackLayout>
+                                </StackLayout>
+
+
+                                <StackLayout.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="RedirectToConnect"/>
+                                </StackLayout.GestureRecognizers>
+                            </StackLayout>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </StackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

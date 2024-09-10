@@ -1,0 +1,112 @@
+using Aquaponia.Domain.Entities;
+using Aquaponia.DTO.Entities;
+using PI_AQP.Mapper;
+using PI_AQP.Models;
+using PI_AQP.Services;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Text;
+using System.Text.Json;
+using System.Windows.Input;
+
+namespace PI_AQP.Views;
+
+public partial class ConfiguracoesPage : ContentPage, INotifyPropertyChanged
+{
+    public ICommand OnSaveChanges { get; set; }
+    private Configuracao _configuracao;
+    public Configuracao configuracao
+    {
+        get => _configuracao;
+        set
+        {
+            if (_configuracao != value)
+            {
+                _configuracao = value;
+                OnPropertyChanged(nameof(configuracao));
+            }
+        }
+    }
+
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    private BluetoothCaracteristica _configuracaoCaracteristica;
+    private DevicesBluetoothDTO _device;
+
+    const string SERVICE_UUID = "02be3f08-b74b-4038-aaa4-5020d1582eba";
+    const string CHARACTERISTIC_CONFIGURATION_UUID = "b371220d-3559-410d-8a47-78b06df6eb3a";
+
+    public ConfiguracoesPage()
+    {
+        OnSaveChanges = new Command<InputNumberView>(SaveChange);
+        configuracao = new();
+        BindingContext = this;
+
+        _device = new() { id = Guid.Parse(Preferences.Get("deviceID_BLE", "")) };
+        _configuracaoCaracteristica = new BluetoothCaracteristica(_device.id, SERVICE_UUID, CHARACTERISTIC_CONFIGURATION_UUID);
+        _configuracaoCaracteristica.CallbackOnUpdate(GetConfiguration);
+
+        InitializeComponent();
+
+        Task.Run(async () =>
+        {
+            try
+            {
+                await _configuracaoCaracteristica.StartService();
+                await _configuracaoCaracteristica.OnStartUpdate();
+                await _configuracaoCaracteristica.Request();
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+        });
+    }
+
+    private void GetConfiguration(CharacteristicBluetoothDTO ble)
+    {
+        try
+        {
+            string response = Encoding.UTF8.GetString(ble.Value);
+
+            ConfiguracoesDTO? dto = JsonSerializer.Deserialize<ConfiguracoesDTO>(response) ?? new ConfiguracoesDTO();
+            dto.rtc = DateTimeOffset.Now.ToUnixTimeSeconds();
+            MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                configuracao = dto.ToModel();
+            });
+        }
+        catch (Exception e)
+        {
+            Debug.WriteLine(e.Message, "erro config");
+        }
+    }
+
+    public async void SaveChange(InputNumberView e)
+    {
+        try
+        {
+            _configuracao.rtc = DateTimeOffset.Now.ToUnixTimeSeconds();
+            await _configuracaoCaracteristica.SendMessage(JsonSerializer.Serialize(new { rtc = _configuracao.rtc }));
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message, "save");
+        }
+    }
+    public async void SaveRTC(InputNumberView e)
+    {
+        try
+        {
+            await _configuracaoCaracteristica.SendMessage(JsonSerializer.Serialize(new { rtc = DateTimeOffset.Now.ToUnixTimeSeconds() }));
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message, "save");
+        }
+    }
+    protected virtual void OnPropertyChanged(string propertyName)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+}

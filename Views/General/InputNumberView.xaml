@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PI_AQP.Views.InputNumberView"
+             Style="{StaticResource DefaultPage}">
+    <ContentView.Resources>
+        <ControlTemplate  x:Key="inputNumber">
+            <HorizontalStackLayout Spacing="8">
+                <Frame Style="{StaticResource InputNumeric}">
+                    <HorizontalStackLayout VerticalOptions="FillAndExpand" Spacing="2">
+                        <Label Text="{TemplateBinding  Value}"
+                            FontSize="16"
+                            FontFamily="InterBold"
+                            VerticalTextAlignment="Center"></Label>
+                        <Label Text="{TemplateBinding UnitMeasure}"
+                            FontSize="16"
+                            FontFamily="InterBold"
+                            VerticalTextAlignment="Center"></Label>
+                    </HorizontalStackLayout>
+                </Frame>
+
+                <StackLayout Orientation="Horizontal">
+                    <Frame Background="Transparent"
+                           Padding="8"
+                           HeightRequest="32"
+                           WidthRequest="32">
+                        <StackLayout>
+                            <Label Text="edit" 
+                                   FontFamily="GoogleMaterialIcons"
+                                   FontSize="16"/>
+                        </StackLayout>
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnEnableEditing"/>
+                        </Frame.GestureRecognizers>
+                    </Frame>
+                </StackLayout>
+            </HorizontalStackLayout>
+        </ControlTemplate>
+
+        <ControlTemplate  x:Key="inputNumberEdit">
+            <HorizontalStackLayout VerticalOptions="FillAndExpand"
+                                   Spacing="8">
+                <Button Text="-"
+                        FontFamily="GoogleMaterialIcons"
+                        FontSize="16"
+                        Padding="0"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        HeightRequest="32"
+                        WidthRequest="32"
+                        FontAttributes="Bold"
+                        CornerRadius="100"
+                        BackgroundColor="#1E58CC" 
+                        Clicked="Decrement"/>
+
+                <HorizontalStackLayout VerticalOptions="FillAndExpand" Spacing="2">
+                    <Entry Placeholder="0"
+                           Text="{TemplateBinding Value, Mode=TwoWay}"
+                           Keyboard="Numeric"
+                           Background="Transparent"
+                           FontSize="16"
+                           FontFamily="InterBold"
+                           TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"/>
+
+                    <Label Text="{TemplateBinding UnitMeasure}"
+                            FontSize="16"
+                            FontFamily="InterBold"
+                            VerticalTextAlignment="Center"></Label>
+                </HorizontalStackLayout>
+
+                <Button Text="add"
+                        FontFamily="GoogleMaterialIcons"
+                        FontSize="16"
+                        Padding="0,2"
+                        HeightRequest="32"
+                        WidthRequest="32"
+                        FontAttributes="Bold"
+                        CornerRadius="100"
+                        BackgroundColor="#3414B6"
+                        Clicked="Increment"/>
+
+                <HorizontalStackLayout Spacing="8">
+                    <StackLayout Orientation="Horizontal" >
+                        <Frame Background="Transparent"
+                               Padding="8"
+                               CornerRadius="100"
+                               HeightRequest="32"
+                               WidthRequest="32">
+                            <StackLayout>
+                                <Label Text="check" 
+                                   FontFamily="GoogleMaterialIcons"
+                                   FontSize="16" />
+                            </StackLayout>
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnCommandSave"/>
+                                <TapGestureRecognizer Command="{TemplateBinding CommandSave}"/>
+                            </Frame.GestureRecognizers>
+                        </Frame>
+                    </StackLayout>
+                    
+                    <Button Text="close"
+                            TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+                            FontFamily="GoogleMaterialIcons"
+                            FontSize="16"
+                            Padding="8"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                            BackgroundColor="Transparent" 
+                            Clicked="DisableEditing"
+                            />
+                </HorizontalStackLayout>
+            </HorizontalStackLayout>
+        </ControlTemplate>
+    </ContentView.Resources>
+</ContentView>

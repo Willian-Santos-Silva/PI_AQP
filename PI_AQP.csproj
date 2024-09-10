@@ -1,0 +1,169 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<!--<TargetFrameworks>net8.0-android;net8.0-ios;net8.0-maccatalyst</TargetFrameworks>
+		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.19041.0</TargetFrameworks>-->
+		<TargetFrameworks>net8.0-android</TargetFrameworks>
+		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
+		<!-- <TargetFrameworks>$(TargetFrameworks);net8.0-tizen</TargetFrameworks> -->
+
+		<!-- Note for MacCatalyst:
+		The default runtime is maccatalyst-x64, except in Release config, in which case the default is maccatalyst-x64;maccatalyst-arm64.
+		When specifying both architectures, use the plural <RuntimeIdentifiers> instead of the singular <RuntimeIdentifier>.
+		The Mac App Store will NOT accept apps with ONLY maccatalyst-arm64 indicated;
+		either BOTH runtimes must be indicated or ONLY macatalyst-x64. -->
+		<!-- For example: <RuntimeIdentifiers>maccatalyst-x64;maccatalyst-arm64</RuntimeIdentifiers> -->
+
+		<OutputType>Exe</OutputType>
+		<RootNamespace>PI_AQP</RootNamespace>
+		<UseMaui>true</UseMaui>
+		<SingleProject>true</SingleProject>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+
+		<!-- Display name -->
+		<ApplicationTitle>PI_AQP</ApplicationTitle>
+
+		<!-- App Identifier -->
+		<ApplicationId>com.companyname.PI_AQP</ApplicationId>
+
+		<!-- Versions -->
+		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+		<ApplicationVersion>1</ApplicationVersion>
+
+		<!--<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">11.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">13.1</SupportedOSPlatformVersion>-->
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
+		<!--<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
+		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>-->
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-android|AnyCPU'">
+	  <DebugType>full</DebugType>
+	</PropertyGroup>
+
+	<!--<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-ios|AnyCPU'">
+	  <DebugType>full</DebugType>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-maccatalyst|AnyCPU'">
+	  <DebugType>full</DebugType>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-windows10.0.19041.0|AnyCPU'">
+	  <DebugType>full</DebugType>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android|AnyCPU'">
+	  <DebugType>full</DebugType>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-ios|AnyCPU'">
+	  <DebugType>full</DebugType>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-maccatalyst|AnyCPU'">
+	  <DebugType>full</DebugType>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-windows10.0.19041.0|AnyCPU'">
+	  <DebugType>full</DebugType>
+	</PropertyGroup>-->
+
+	<ItemGroup>
+		<!-- App Icon -->
+		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
+
+		<MauiImage ResizeMode="Stretch" Resize="true" Include="Resources\AppIcon\background.svg" ForegroundFile="Resources\AppIcon\background.svg" />
+		<MauiImage ResizeMode="Stretch" Resize="true" Include="Resources\AppIcon\main_background_miscellaneous_primary.svg" ForegroundFile="Resources\AppIcon\main_background_miscellaneous_primary.svg" />
+		<MauiImage ResizeMode="Stretch" Resize="true" Include="Resources\AppIcon\top_background_miscellaneous_primarydark.svg" ForegroundFile="Resources\AppIcon\top_background_miscellaneous_primarydark.svg" />
+		<MauiImage ResizeMode="Stretch" Resize="true" Include="Resources\AppIcon\top_background_miscellaneous_primary.svg" ForegroundFile="Resources\AppIcon\top_background_miscellaneous_primary.svg" />
+		<MauiImage ResizeMode="Stretch" Resize="true" Include="Resources\AppIcon\main_background_miscellaneous_primarydark.svg" ForegroundFile="Resources\AppIcon\main_background_miscellaneous_primarydark.svg" />
+		<MauiImage Include="Resources\AppIcon\addtime.svg" ForegroundFile="Resources\AppIcon\addtime.svg" />
+		<MauiImage Include="Resources\AppIcon\cancel.svg" ForegroundFile="Resources\AppIcon\cancel.svg" />
+		<MauiImage Include="Resources\AppIcon\check.svg" ForegroundFile="Resources\AppIcon\check.svg" />
+		<MauiImage Include="Resources\AppIcon\config.svg" ForegroundFile="Resources\AppIcon\config.svg" />
+		<MauiImage Include="Resources\AppIcon\edit.svg" ForegroundFile="Resources\AppIcon\edit.svg" />
+		<MauiImage Include="Resources\AppIcon\ph.svg" ForegroundFile="Resources\AppIcon\ph.svg" />
+		<MauiImage Include="Resources\AppIcon\plant.svg" ForegroundFile="Resources\AppIcon\plant.svg" />
+		<MauiImage Include="Resources\AppIcon\pump.svg" ForegroundFile="Resources\AppIcon\pump.svg" />
+		<MauiImage Include="Resources\AppIcon\trash.svg" ForegroundFile="Resources\AppIcon\trash.svg" />
+		<MauiImage Include="Resources\AppIcon\water.svg" ForegroundFile="Resources\AppIcon\water.svg" />
+		<MauiImage Include="Resources\AppIcon\logo.svg" ForegroundFile="Resources\AppIcon\logo.svg" />
+
+		<!-- Splash Screen -->
+		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#1E58CC" />
+
+		<!-- Images -->
+		<MauiImage Include="Resources\Images\*" />
+		<MauiImage Update="Resources\Images\dotnet_bot.png" Resize="True" BaseSize="300,185" />
+
+		<!-- Custom Fonts -->
+		<MauiFont Include="Resources\Fonts\*" />
+
+		<MauiFont Include="Resources\Fonts\Inter-Black.ttf" />
+		<MauiFont Include="Resources\Fonts\Inter-Bold.ttf" />
+		<MauiFont Include="Resources\Fonts\Inter-ExtraBold.ttf" />
+		<MauiFont Include="Resources\Fonts\Inter-ExtraLight.ttf" />
+		<MauiFont Include="Resources\Fonts\Inter-Light.ttf" />
+		<MauiFont Include="Resources\Fonts\Inter-Medium.ttf" />
+		<MauiFont Include="Resources\Fonts\Inter-Regular.ttf" />
+		<MauiFont Include="Resources\Fonts\Inter-SemiBold.ttf" />
+		<MauiFont Include="Resources\Fonts\Inter-Thin.ttf" />
+		<MauiFont Include="Resources\Fonts\Inter-VariableFont.ttf" />
+		<MauiFont Include="Resources\Fonts\MaterialIcons-Regular.codepoints" />
+
+		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
+		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="CommunityToolkit.Maui" Version="9.0.3" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.82" />
+		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.82" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
+		<PackageReference Include="Plugin.BLE" Version="3.1.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="E:\User\Projetos\#02 - Android\Aquaponia.DTO\Aquaponia.Domain.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiXaml Update="Resources\Styles\StyleMainPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\Configuracoes\ConfiguracoesPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\Dispositivos\ConnectDeviceInNetworkPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\Dispositivos\ConnectDevicePage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\Dispositivos\DiscoveryDevicesPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\Dispositivos\DiscoveryNetworksPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\General\CustomInputTimeView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\General\InputNumberView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\Home\LoadingPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\Routines\CreateIrrigationRoutinePage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\Routines\UpdateIrrigationRoutinePage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	</ItemGroup>
+
+</Project>

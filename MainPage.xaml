@@ -1,0 +1,414 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:PI_AQP"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:template="clr-namespace:PI_AQP.Templates"
+             xmlns:custom="clr-namespace:PI_AQP.CustomElements"
+             x:Class="PI_AQP.MainPage"
+             Style="{StaticResource DefaultPage}">
+    <ContentPage.Behaviors>
+        <toolkit:StatusBarBehavior StatusBarColor="Black" StatusBarStyle="LightContent" />
+    </ContentPage.Behaviors>
+
+    <ScrollView Margin="0" Padding="0">
+        <StackLayout Margin="0" Padding="0">
+            <Grid Padding="0,0,0,0" Margin="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                    <Image Aspect="Fill" Source="{AppThemeBinding Light='Resources/AppIcon/main_background_miscellaneous_primary.svg', Dark='main_background_miscellaneous_primarydark.svg'}"></Image>
+
+                <StackLayout  Margin="0" Padding="0">
+                    <StackLayout Margin="32, 16, 0, 0"
+                                Spacing="4"
+                                Orientation="Horizontal"
+                                VerticalOptions="CenterAndExpand">
+                        <Image Source="{AppThemeBinding Light='Resources/AppIcon/logo.svg', Dark='Resources/AppIcon/logo.svg'}"
+                            HeightRequest="14"></Image>
+
+                        <Label Text="Aquaponia"
+                            FontSize="14"
+                            FontFamily="InterBold"
+                            TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource White}}"
+                        ></Label>
+                    </StackLayout>
+
+                    <StackLayout Margin="32,0,32,0">
+                        <Grid Margin="0,64,0,64">
+                            <GraphicsView x:Name="GraphicTimingPump"
+                                          WidthRequest="154"
+                                          HeightRequest="154">
+                                <GraphicsView.Drawable>
+                                    <custom:TimerDrawable x:Name="TimingPump"/>
+                                </GraphicsView.Drawable>
+                            </GraphicsView>
+
+                            <StackLayout HorizontalOptions="Center"
+                                         VerticalOptions="Center"
+                                         Spacing="4">
+                                <Label x:Name="Timing"
+                                       TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource White}}"
+                                       Text="--:--:--"
+                                       FontFamily="InterBold"
+                                       FontSize="18"
+                                       HorizontalTextAlignment="Center"/>
+                                <Label x:Name="ActionTiming"
+                                       Text="AGUARDANDO STATUS"
+                                       TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource White}}"
+                                       FontFamily="InterBold"
+                                       FontSize="10"
+                                       TextTransform="Uppercase"
+                                       HorizontalTextAlignment="Center"/>
+                            </StackLayout>
+                        </Grid>
+
+                        <FlexLayout JustifyContent="Center"
+                                Direction="Row"
+                                HeightRequest="96">
+                            <Frame Style="{StaticResource InfoCard}"
+                                Margin="0, 0, 16, 0">
+                                <Grid VerticalOptions="Center" ColumnSpacing="4" HorizontalOptions="Center">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Label x:Name="labelTemperature"
+                                           Style="{StaticResource LabelInfoCard}"
+                                           Text="-"
+                                           Grid.Column="0">
+                                    </Label>
+
+                                    <Label Style="{StaticResource LabelInfoCardUnitMeasurement}"
+                                        Grid.Column="1"
+                                        Text="ºC">
+                                    </Label>
+                                </Grid>
+
+                                <Frame.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Color="#611E80" Offset="0"/>
+                                        <GradientStop Color="#A63ACC" Offset="0.5"/>
+                                        <GradientStop Color="#C73CE3" Offset="0.8"/>
+                                    </LinearGradientBrush>
+                                </Frame.Background>
+                            </Frame>
+
+                            <Frame Style="{StaticResource InfoCard}"
+                                   Margin="0, 0, 16, 0" >
+                                <Grid VerticalOptions="CenterAndExpand" ColumnSpacing="4" HorizontalOptions="Center">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Label x:Name="labelTurbitity"
+                                           Style="{StaticResource LabelInfoCard}"
+                                           Text="-"
+                                           Grid.Column="0">
+                                    </Label>
+
+                                    <Label Style="{StaticResource LabelInfoCardUnitMeasurement}"
+                                           Grid.Column="1"
+                                           Text="NTU">
+                                    </Label>
+                                </Grid>
+
+                                <Frame.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Color="#3964A2" Offset="0"/>
+                                        <GradientStop Color="#7DA3DA" Offset="0.8"/>
+                                    </LinearGradientBrush>
+                                </Frame.Background>
+                            </Frame>
+
+                            <Frame Style="{StaticResource InfoCard}">
+                                <Grid VerticalOptions="CenterAndExpand" ColumnSpacing="4" HorizontalOptions="Center">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Label x:Name="labelPh"
+                                           Style="{StaticResource LabelInfoCard}"
+                                           Text="-"
+                                           Grid.Column="0"></Label>
+
+                                    <Label Style="{StaticResource LabelInfoCardUnitMeasurement}"
+                                           Grid.Column="1"
+                                           Text="pH"></Label>
+                                </Grid>
+
+                                <Frame.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Color="#E13684" Offset="0"/>
+                                        <GradientStop Color="#F72585" Offset="0.4"/>
+                                        <GradientStop Color="#F959A2" Offset="0.9"/>
+                                    </LinearGradientBrush>
+                                </Frame.Background>
+                            </Frame>
+                        </FlexLayout>
+                    </StackLayout>
+                </StackLayout>
+            </Grid>
+
+            <StackLayout Margin="32, 16, 32, 0">
+                <Label Text="Rotinas de irrigação"
+                                           FontAttributes="Bold"
+                                           Margin="0,0,0,8"></Label>
+                <CollectionView x:Name="rotinasListView" 
+                                            ItemsUpdatingScrollMode="KeepItemsInView"
+                                            ItemTemplate="{StaticResource RotinasTemplates}"
+                                            HorizontalOptions="FillAndExpand">
+                    <CollectionView.ItemsLayout
+                                            BackgroundColor="{StaticResource Primary}">
+                        <LinearItemsLayout Orientation="Vertical" ItemSpacing="16" />
+                    </CollectionView.ItemsLayout>
+
+                    <CollectionView.EmptyView>
+                        <Label Text="Nenhuma rotina definida."/>
+                    </CollectionView.EmptyView>
+
+                </CollectionView>
+
+                <StackLayout x:Name="AddNewRoutine"
+                                         VerticalOptions="FillAndExpand" 
+                                         Orientation="Horizontal" 
+                                         HorizontalOptions="End"
+                                         Margin="0, 8, 0, 0">
+                    <Button ImageSource="addtime.svg"
+                                                Text="Novo horário"
+                                                Clicked="BtAdicionar_Clicked"
+                                                HorizontalOptions="End"></Button>
+                </StackLayout>
+            </StackLayout>
+        </StackLayout>
+    </ScrollView>
+
+    <ContentPage.Resources>
+        <custom:TimerDrawable x:Key="Times" DurationValue="00:01:00"></custom:TimerDrawable>
+
+        <DataTemplate x:Key="On">
+            <StackLayout HorizontalOptions="FillAndExpand">
+                <Frame CornerRadius="8"
+                       Padding="24,14"
+                       BorderColor="Transparent"
+                       HorizontalOptions="FillAndExpand">
+
+                    <FlexLayout JustifyContent="SpaceBetween">
+                        <StackLayout VerticalOptions="Center"
+                                     Spacing="8">
+
+                            <CollectionView ItemsSource="{Binding daysOfTheWeek}">
+                                <CollectionView.ItemsLayout>
+                                    <LinearItemsLayout Orientation="Horizontal" ItemSpacing="4" />
+                                </CollectionView.ItemsLayout>
+
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackLayout>
+                                            <Frame CornerRadius="20"
+                                                   WidthRequest="24"
+                                                   HeightRequest="24"
+                                                   Padding="0"
+                                                   Margin="0">
+                                                <Label Text="{Binding Name}"
+                                                       HorizontalOptions="Center"
+                                                       VerticalOptions="Center"
+                                                       FontSize="14"
+                                                       FontFamily="Inter-Bold"
+                                                       Padding="0"
+                                                       Margin="0">
+                                                    <Label.Triggers>
+                                                        <DataTrigger TargetType="Label"
+                                                                     Binding="{Binding IsChecked}"
+                                                                     Value="False">
+                                                            <Setter Property="TextColor" Value="{AppThemeBinding Light='#6480E4', Dark='#5E657D'}" />
+                                                        </DataTrigger>
+
+                                                        <DataTrigger TargetType="Label"
+                                                                     Binding="{Binding IsChecked}"
+                                                                     Value="True">
+                                                            <Setter Property="TextColor" Value="{AppThemeBinding Light='#113C8C', Dark='#D9D9D9'}"/>
+                                                        </DataTrigger>
+                                                    </Label.Triggers>
+                                                </Label>
+
+                                                <Frame.Triggers>
+                                                    <DataTrigger TargetType="Frame"
+                                                                 Binding="{Binding IsChecked}"
+                                                                 Value="False">
+                                                        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light='Transparent', Dark='Transparent'}"/>
+                                                        <Setter Property="BorderColor" Value="{AppThemeBinding Light='#6480E4', Dark='#5E657D'}" />
+                                                    </DataTrigger>
+
+                                                    <DataTrigger TargetType="Frame"
+                                                                 Binding="{Binding IsChecked}"
+                                                                 Value="True">
+                                                        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light='#CADCFD', Dark='#20304C'}"/>
+                                                        <Setter Property="BorderColor" Value="{AppThemeBinding Light='#113C8C', Dark='#D9D9D9'}" />
+                                                    </DataTrigger>
+                                                </Frame.Triggers>
+                                            </Frame>
+                                        </StackLayout>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+
+
+                            <HorizontalStackLayout>
+                                <Label Text="Próximo: "
+                                        FontSize="10"
+                                        FontFamily="Inter"
+                                        TextColor="#CADCFD"/>
+                                <Label Text="{Binding nextHour}"
+                                        FontSize="10"
+                                        FontFamily="Inter"
+                                        TextColor="#CADCFD"/>
+                            </HorizontalStackLayout>
+                        </StackLayout>
+
+                        <StackLayout Orientation="Horizontal"
+                                     VerticalOptions="Center"
+                                     Spacing="4">
+                            <Button ClassId="btAtivar"
+                                    BackgroundColor="Transparent"
+                                    Text="edit"
+                                    FontFamily="GoogleMaterialIcons"
+                                    FontAttributes="Bold"
+                                    FontSize="16"
+                                    TextColor="#CADCFD"
+                                    Padding="8"
+                                    Command="{Binding BindingContext.EditTappedCommand, Source={RelativeSource AncestorType={x:Type CollectionView}}}"
+                                    CommandParameter="{Binding .}">
+                            </Button>
+                            <Button ClassId="btAtivar"
+                                    BackgroundColor="Transparent"
+                                    Text="delete"
+                                    FontFamily="GoogleMaterialIcons"
+                                    FontAttributes="Bold"
+                                    FontSize="16"
+                                    TextColor="#CADCFD"
+                                    Padding="8"
+                                    Command="{Binding BindingContext.RemoveTappedCommand, Source={RelativeSource AncestorType={x:Type CollectionView}}}"
+                                    CommandParameter="{Binding .}">
+                            </Button>
+
+                        </StackLayout>
+                    </FlexLayout>
+
+                    <Frame.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="{AppThemeBinding Light='#123A96', Dark='#23324D'}" Offset="0"/>
+                            <GradientStop Color="{AppThemeBinding Light='#1233A9', Dark='#263651'}" Offset="0.3"/>
+                            <GradientStop Color="{AppThemeBinding Light='#215DD1', Dark='#33496E'}" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Frame.Background>
+                </Frame>
+            </StackLayout>
+        </DataTemplate>
+
+        <DataTemplate x:Key="Off">
+            <StackLayout HorizontalOptions="FillAndExpand">
+                <Frame CornerRadius="8"
+                       Padding="24,14"
+                       BorderColor="Transparent"
+                       BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark='#1B283E' }"
+                       HorizontalOptions="FillAndExpand">
+                    <FlexLayout JustifyContent="SpaceBetween">
+                        <StackLayout VerticalOptions="Center">
+                            <CollectionView ItemsSource="{Binding daysOfTheWeek}">
+                                <CollectionView.ItemsLayout>
+                                    <LinearItemsLayout Orientation="Horizontal" ItemSpacing="4" />
+                                </CollectionView.ItemsLayout>
+
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackLayout>
+                                            <Frame CornerRadius="20"
+                                                   WidthRequest="24"
+                                                   HeightRequest="24"
+                                                   Padding="0"
+                                                   Margin="0">
+                                                <Label Text="{Binding Name}"
+                                                       HorizontalOptions="Center"
+                                                       VerticalOptions="Center"
+                                                       FontSize="14"
+                                                       FontFamily="Inter-Bold"
+                                                       Padding="0"
+                                                       Margin="0">
+                                                    <Label.Triggers>
+                                                        <DataTrigger TargetType="Label"
+                                                                     Binding="{Binding IsChecked}"
+                                                                     Value="False">
+                                                            <Setter Property="TextColor" Value="{AppThemeBinding Light='#6480E4', Dark='#5E657D'}" />
+                                                        </DataTrigger>
+
+                                                        <DataTrigger TargetType="Label"
+                                                                     Binding="{Binding IsChecked}"
+                                                                     Value="True">
+                                                            <Setter Property="TextColor" Value="{AppThemeBinding Light='#113C8C', Dark='#D9D9D9'}"/>
+                                                        </DataTrigger>
+                                                    </Label.Triggers>
+                                                </Label>
+
+                                                <Frame.Triggers>
+                                                    <DataTrigger TargetType="Frame"
+                                                                 Binding="{Binding IsChecked}"
+                                                                 Value="False">
+                                                        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light='Transparent', Dark='Transparent'}"/>
+                                                        <Setter Property="BorderColor" Value="{AppThemeBinding Light='#6480E4', Dark='#5E657D'}" />
+                                                    </DataTrigger>
+
+                                                    <DataTrigger TargetType="Frame"
+                                                                 Binding="{Binding IsChecked}"
+                                                                 Value="True">
+                                                        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light='#CADCFD', Dark='#20304C'}"/>
+                                                        <Setter Property="BorderColor" Value="{AppThemeBinding Light='#113C8C', Dark='#D9D9D9'}" />
+                                                    </DataTrigger>
+                                                </Frame.Triggers>
+                                            </Frame>
+                                        </StackLayout>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </StackLayout>
+
+                        <StackLayout Orientation="Horizontal"
+                                     VerticalOptions="Center"
+                                     Spacing="4">
+                            <Button ClassId="btEditar"
+                                    BackgroundColor="Transparent"
+                                    Text="edit"
+                                    FontFamily="GoogleMaterialIcons"
+                                    FontAttributes="Bold"
+                                    FontSize="16"
+                                    TextColor="{AppThemeBinding Light='Black', Dark='#D9D9D9'}"
+                                    Padding="8"
+                                    Command="{Binding BindingContext.EditTappedCommand, Source={RelativeSource AncestorType={x:Type CollectionView}}}"
+                                    CommandParameter="{Binding .}">
+                            </Button>
+                            <Button ClassId="btExcluir"
+                                    Text="delete"
+                                    BackgroundColor="Transparent"
+                                    FontAttributes="Bold"
+                                    FontFamily="GoogleMaterialIcons"
+                                    TextColor="{AppThemeBinding Light='Black', Dark='#D9D9D9'}"
+                                    FontSize="16"
+                                    Padding="8"
+                                    Command="{Binding BindingContext.RemoveTappedCommand, Source={RelativeSource AncestorType={x:Type CollectionView}}}"
+                                    CommandParameter="{Binding .}">
+                            </Button>
+
+                        </StackLayout>
+                    </FlexLayout>
+                </Frame>
+            </StackLayout>
+        </DataTemplate>
+        <template:ListRotinasTemplate x:Key="RotinasTemplates"
+                                        On="{StaticResource On}"
+                                        Off="{StaticResource Off}"/>
+    </ContentPage.Resources>
+</ContentPage>

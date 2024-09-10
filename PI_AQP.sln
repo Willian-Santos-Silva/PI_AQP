@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34330.188
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PI_AQP", "PI_AQP.csproj", "{54244713-FA40-49D8-AF2B-047937C15262}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aquaponia.Domain", "E:\User\Projetos\#02 - Android\Aquaponia.DTO\Aquaponia.Domain.csproj", "{F458EACC-F207-4182-96C9-E70605574E8F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{54244713-FA40-49D8-AF2B-047937C15262}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54244713-FA40-49D8-AF2B-047937C15262}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54244713-FA40-49D8-AF2B-047937C15262}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{54244713-FA40-49D8-AF2B-047937C15262}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54244713-FA40-49D8-AF2B-047937C15262}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54244713-FA40-49D8-AF2B-047937C15262}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{F458EACC-F207-4182-96C9-E70605574E8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F458EACC-F207-4182-96C9-E70605574E8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F458EACC-F207-4182-96C9-E70605574E8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F458EACC-F207-4182-96C9-E70605574E8F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9EDBAC5A-A731-4101-B1B5-6BC090B74EC5}
+	EndGlobalSection
+EndGlobal
