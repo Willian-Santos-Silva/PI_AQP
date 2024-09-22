@@ -13,7 +13,7 @@ namespace PI_AQP.Mapper
             for (int i = 0; i < weekDays.Count; i++)
             {
                 WeekDaysModel weekday = weekDays.First(w => i == (int)w.DayOfWeek);
-                rotina.WeekDays[i] = weekday.IsChecked;
+                rotina.weekdays[i] = weekday.IsChecked;
                 rotina.id = weekday.Id;
             }
         }
@@ -53,26 +53,26 @@ namespace PI_AQP.Mapper
         {
             return new ObservableCollection<WeekDaysModel>()
             {
-                new WeekDaysModel { Id = model.id, Name = "D", DayOfWeek = DayOfWeek.Sunday, IsChecked = model.WeekDays[(int)DayOfWeek.Sunday], IsActive = !dw[(int)DayOfWeek.Sunday] },
-                new WeekDaysModel { Id = model.id, Name = "S", DayOfWeek = DayOfWeek.Monday, IsChecked = model.WeekDays[(int)DayOfWeek.Monday], IsActive = !dw[(int)DayOfWeek.Monday] },
-                new WeekDaysModel { Id = model.id, Name = "T", DayOfWeek = DayOfWeek.Tuesday, IsChecked = model.WeekDays[(int)DayOfWeek.Tuesday], IsActive = !dw[(int)DayOfWeek.Tuesday]  },
-                new WeekDaysModel { Id = model.id, Name = "Q", DayOfWeek = DayOfWeek.Wednesday, IsChecked = model.WeekDays[(int)DayOfWeek.Wednesday], IsActive = !dw[(int)DayOfWeek.Wednesday] },
-                new WeekDaysModel { Id = model.id, Name = "Q", DayOfWeek = DayOfWeek.Thursday, IsChecked = model.WeekDays[(int)DayOfWeek.Thursday], IsActive = !dw[(int)DayOfWeek.Thursday] },
-                new WeekDaysModel { Id = model.id, Name = "S", DayOfWeek = DayOfWeek.Friday, IsChecked = model.WeekDays[(int)DayOfWeek.Friday], IsActive = !dw[(int)DayOfWeek.Friday] },
-                new WeekDaysModel { Id = model.id, Name = "S", DayOfWeek = DayOfWeek.Saturday, IsChecked = model.WeekDays[(int)DayOfWeek.Saturday], IsActive = !dw[(int)DayOfWeek.Saturday] }
+                new WeekDaysModel { Id = model.id, Name = "D", DayOfWeek = DayOfWeek.Sunday, IsChecked = model.weekdays[(int)DayOfWeek.Sunday], IsActive = !dw[(int)DayOfWeek.Sunday] },
+                new WeekDaysModel { Id = model.id, Name = "S", DayOfWeek = DayOfWeek.Monday, IsChecked = model.weekdays[(int)DayOfWeek.Monday], IsActive = !dw[(int)DayOfWeek.Monday] },
+                new WeekDaysModel { Id = model.id, Name = "T", DayOfWeek = DayOfWeek.Tuesday, IsChecked = model.weekdays[(int)DayOfWeek.Tuesday], IsActive = !dw[(int)DayOfWeek.Tuesday]  },
+                new WeekDaysModel { Id = model.id, Name = "Q", DayOfWeek = DayOfWeek.Wednesday, IsChecked = model.weekdays[(int)DayOfWeek.Wednesday], IsActive = !dw[(int)DayOfWeek.Wednesday] },
+                new WeekDaysModel { Id = model.id, Name = "Q", DayOfWeek = DayOfWeek.Thursday, IsChecked = model.weekdays[(int)DayOfWeek.Thursday], IsActive = !dw[(int)DayOfWeek.Thursday] },
+                new WeekDaysModel { Id = model.id, Name = "S", DayOfWeek = DayOfWeek.Friday, IsChecked = model.weekdays[(int)DayOfWeek.Friday], IsActive = !dw[(int)DayOfWeek.Friday] },
+                new WeekDaysModel { Id = model.id, Name = "S", DayOfWeek = DayOfWeek.Saturday, IsChecked = model.weekdays[(int)DayOfWeek.Saturday], IsActive = !dw[(int)DayOfWeek.Saturday] }
             };
         }
         public static ObservableCollection<WeekDaysModel> ToViewModelWeekDays(this RotinasDTO model)
         {
             return new ObservableCollection<WeekDaysModel>()
             {
-                new WeekDaysModel { Id = model.id, Name = "D", DayOfWeek = DayOfWeek.Sunday, IsChecked = model.WeekDays[(int)DayOfWeek.Sunday] },
-                new WeekDaysModel { Id = model.id, Name = "S", DayOfWeek = DayOfWeek.Monday, IsChecked = model.WeekDays[(int)DayOfWeek.Monday] },
-                new WeekDaysModel { Id = model.id, Name = "T", DayOfWeek = DayOfWeek.Tuesday, IsChecked = model.WeekDays[(int)DayOfWeek.Tuesday] },
-                new WeekDaysModel { Id = model.id, Name = "Q", DayOfWeek = DayOfWeek.Wednesday, IsChecked = model.WeekDays[(int)DayOfWeek.Wednesday] },
-                new WeekDaysModel { Id = model.id, Name = "Q", DayOfWeek = DayOfWeek.Thursday, IsChecked = model.WeekDays[(int)DayOfWeek.Thursday] },
-                new WeekDaysModel { Id = model.id, Name = "S", DayOfWeek = DayOfWeek.Friday, IsChecked = model.WeekDays[(int)DayOfWeek.Friday] },
-                new WeekDaysModel { Id = model.id, Name = "S", DayOfWeek = DayOfWeek.Saturday, IsChecked = model.WeekDays[(int)DayOfWeek.Saturday] }
+                new WeekDaysModel { Id = model.id, Name = "D", DayOfWeek = DayOfWeek.Sunday, IsChecked = model.weekdays[(int)DayOfWeek.Sunday] },
+                new WeekDaysModel { Id = model.id, Name = "S", DayOfWeek = DayOfWeek.Monday, IsChecked = model.weekdays[(int)DayOfWeek.Monday] },
+                new WeekDaysModel { Id = model.id, Name = "T", DayOfWeek = DayOfWeek.Tuesday, IsChecked = model.weekdays[(int)DayOfWeek.Tuesday] },
+                new WeekDaysModel { Id = model.id, Name = "Q", DayOfWeek = DayOfWeek.Wednesday, IsChecked = model.weekdays[(int)DayOfWeek.Wednesday] },
+                new WeekDaysModel { Id = model.id, Name = "Q", DayOfWeek = DayOfWeek.Thursday, IsChecked = model.weekdays[(int)DayOfWeek.Thursday] },
+                new WeekDaysModel { Id = model.id, Name = "S", DayOfWeek = DayOfWeek.Friday, IsChecked = model.weekdays[(int)DayOfWeek.Friday] },
+                new WeekDaysModel { Id = model.id, Name = "S", DayOfWeek = DayOfWeek.Saturday, IsChecked = model.weekdays[(int)DayOfWeek.Saturday] }
             };
         }
 
@@ -88,32 +88,22 @@ namespace PI_AQP.Mapper
                 horario.Id = rotina.id;
                 horario.daysOfTheWeek = rotina.ToViewModelWeekDays();
 
-
-
                 rotina.horarios.OrderBy(p => p.start);
 
-                //Debug.WriteLine($"{new DateTimeOffset(DateTime.Today).ToUniversalTime().AddMinutes(rotina.horarios.First().start)} - {new DateTimeOffset(DateTime.Today).ToUniversalTime().AddMinutes(rotina.horarios.First().end)}");
-                //Debug.WriteLine($"{DateTimeOffset.Now.ToUniversalTime()}");
-                
+                Periodo? nextHour = rotina.horarios.FirstOrDefault(periodo => periodo.EstaDentroDoPeriodo());
+                if(nextHour == null)
+                {
+                    nextHour = rotina.horarios
+                                .FirstOrDefault(p => p.isNextPeriod());
 
-                //Periodo? nextHour = rotina.horarios.FirstOrDefault(periodo => periodo.EstaDentroDoPeriodo());
-                //if(nextHour == null)
-                //{
-                //    nextHour = rotina.horarios
-                //                .FirstOrDefault(p => p.isNextPeriod());
+                    if (nextHour == null)
+                    {
+                        nextHour = rotina.horarios.First();
+                    }
+                }
 
-                //    if (nextHour == null)
-                //    {
-                //        nextHour = new Periodo();
-                //    }
-                //}
-                //horario.StartNextHour = TimeSpan.FromMinutes(nextHour.start);
-                //horario.EndNextHour = TimeSpan.FromMinutes(nextHour.end);
-
-                //long epochTicks = new DateTime(1970, 1, 1).Ticks;
-                //long unixTime = ((DateTime.UtcNow.Ticks - epochTicks) / TimeSpan.TicksPerSecond);
-
-                //Debug.WriteLine($"{horario.StartNextHour} - {horario.EndNextHour}");
+                horario.StartNextHour = TimeSpan.FromMinutes(nextHour.start);
+                horario.EndNextHour = TimeSpan.FromMinutes(nextHour.end);
 
                 horario.nextHour = $"{horario.StartNextHour.ToFormattedString("HH:mm")} à {horario.EndNextHour.ToFormattedString("HH:mm")}";
                 horario.rotinaDTO = rotina;
@@ -127,10 +117,12 @@ namespace PI_AQP.Mapper
         private static List<RotinasDTO> Classificar(this List<RotinasDTO> rotinas)
         {
             List<RotinasDTO> rotinasOrdering = new();
+
+
             int i = 0;
             while (i < rotinas.Count())
             {
-                if (rotinas[i].WeekDays[(int)DateTime.Today.DayOfWeek])
+                if (rotinas[i].weekdays[(int)DateTime.Today.DayOfWeek])
                 {
                     rotinasOrdering.Add(rotinas[i]);
                     rotinas.RemoveAt(i);
@@ -138,36 +130,40 @@ namespace PI_AQP.Mapper
                 }
                 i++;
             }
-            i = 0;
 
-            while (i < rotinas.Count())
+
+            for (int w = (int)DateTime.Today.DayOfWeek; w < 7; w++)
             {
-                for (int w = (int)DateTime.Today.DayOfWeek; w < 7; w++)
+                i = 0;
+                while (i < rotinas.Count())
                 {
-                    if (rotinas[i].WeekDays[w])
+                    if (rotinas[i].weekdays[w])
                     {
                         rotinasOrdering.Add(rotinas[i]);
                         rotinas.RemoveAt(i);
                         break;
                     }
+                    i++;
                 }
-                i++;
             }
 
-            i = 0;
-            while (i < rotinas.Count())
+
+            for (int w = 0; w < (int)DateTime.Today.DayOfWeek; w++)
             {
-                for (int w = 0; w < (int)DateTime.Today.DayOfWeek; w++)
+                i = 0;
+                while (i < rotinas.Count())
                 {
-                    if (rotinas[i].WeekDays[w])
+                    if (rotinas[i].weekdays[w])
                     {
                         rotinasOrdering.Add(rotinas[i]);
                         rotinas.RemoveAt(i);
                         break;
                     }
+                    i++;
                 }
-                i++;
             }
+
+
             return rotinasOrdering;
         }
     }

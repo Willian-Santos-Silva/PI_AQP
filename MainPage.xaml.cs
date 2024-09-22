@@ -106,7 +106,7 @@ namespace PI_AQP
             {
                 for (int i = 0; i < 7; i++)
                 {
-                    dw[i] |= r.rotinaDTO.WeekDays[i];
+                    dw[i] |= r.rotinaDTO.weekdays[i];
                 }
             }
 
