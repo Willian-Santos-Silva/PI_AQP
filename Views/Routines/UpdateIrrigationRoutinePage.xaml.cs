@@ -3,11 +3,23 @@ using PI_AQP.ViewModels.Routines;
 
 namespace PI_AQP.Views;
 
-[QueryProperty(nameof(rotina), "_rotina"), QueryProperty(nameof(_dw), "dwUtilizados")]
+[QueryProperty(nameof(rotina), "_rotina"), QueryProperty(nameof(dw), "dw")]
 public partial class UpdateIrrigationRoutinePage : ContentPage
 {
     private UpdateIrrigationRoutinesViewModel _irrigationRoutinesViewModel;
-    private bool [] _dw = new bool[7];
+    private bool[] _dw = new bool[7];
+    public bool[] dw
+    {
+        get => _dw;
+        set
+        {
+            _dw = value;
+
+            _irrigationRoutinesViewModel = new UpdateIrrigationRoutinesViewModel(rotina, _dw);
+            BindingContext = _irrigationRoutinesViewModel;
+            OnPropertyChanged();
+        }
+    }
     private RotinasDTO _rotina { get; set; }
     public RotinasDTO rotina
     {
@@ -15,10 +27,9 @@ public partial class UpdateIrrigationRoutinePage : ContentPage
         set
         {
             _rotina = value;
-            OnPropertyChanged();
 
-            _irrigationRoutinesViewModel = new UpdateIrrigationRoutinesViewModel(rotina, _dw);
             BindingContext = _irrigationRoutinesViewModel;
+            OnPropertyChanged();
         }
     }
 

@@ -106,7 +106,7 @@ namespace PI_AQP.ViewModels
 
             Dictionary<string, object> parameters = new Dictionary<string, object>() {
                 { "_rotina", item.rotinaDTO },
-                { "dwUtilizados", dw }
+                { "dw", dw }
             };
 
             await Shell.Current.GoToAsync(nameof(UpdateIrrigationRoutinePage), parameters);

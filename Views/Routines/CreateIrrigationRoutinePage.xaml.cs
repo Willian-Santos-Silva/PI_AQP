@@ -15,10 +15,6 @@ public partial class CreateIrrigationRoutinePage : ContentPage
         {
             _dw = value;
 
-            foreach (var w in _dw)
-            {
-                Debug.WriteLine(w, "[dw red]");
-            }
             _irrigationRoutinesViewModel = new CreateIrrigationRoutinesViewModel(_dw);
             BindingContext = _irrigationRoutinesViewModel;
             OnPropertyChanged();

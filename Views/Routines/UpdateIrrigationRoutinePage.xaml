@@ -50,6 +50,7 @@
                     Margin="0, 0, 0, 8"/>
                 
                 <FlexLayout Direction="Row" >
+
                     <CollectionView ItemsSource="{Binding listWeekdays}">
 
                         <CollectionView.ItemsLayout>
@@ -70,19 +71,30 @@
 
                                         <Button.Triggers>
                                             <DataTrigger TargetType="Button"
-                                                        Binding="{Binding IsChecked}"
-                                                        Value="False">
+                                                        Binding="{Binding State}"
+                                                        Value="NOT_SELECTED">
                                                 <Setter Property="BackgroundColor" Value="Transparent" />
                                                 <Setter Property="BorderColor" Value="{StaticResource Primary}" />
                                                 <Setter Property="TextColor" Value="{StaticResource Primary}"/>
+                                                <Setter Property="IsEnabled" Value="True" />
                                             </DataTrigger>
 
                                             <DataTrigger TargetType="Button"
-                                                        Binding="{Binding IsChecked}"
-                                                        Value="True">
+                                                        Binding="{Binding State}"
+                                                        Value="SELECTED">
                                                 <Setter Property="BackgroundColor" Value="{StaticResource Primary}"/>
                                                 <Setter Property="BorderColor" Value="{StaticResource Primary}" />
                                                 <Setter Property="TextColor" Value="{StaticResource White}" />
+                                                <Setter Property="IsEnabled" Value="True" />
+                                            </DataTrigger>
+
+                                            <DataTrigger TargetType="Button"
+                                                        Binding="{Binding State}"
+                                                        Value="DISABLED">
+                                                <Setter Property="BackgroundColor" Value="Transparent"/>
+                                                <Setter Property="BorderColor" Value="{StaticResource Gray400}" />
+                                                <Setter Property="TextColor" Value="{StaticResource Gray400}" />
+                                                <Setter Property="IsEnabled" Value="False" />
                                             </DataTrigger>
                                         </Button.Triggers>
                                     </Button>
@@ -159,6 +171,7 @@
         </StackLayout>
     </ScrollView>
 
+
     <ContentPage.Resources>
         <DataTemplate x:Key="Default">
             <StackLayout Orientation="Horizontal" Spacing="16">
@@ -193,7 +206,7 @@
                 </StackLayout>
                 <StackLayout VerticalOptions="Center">
                     <Button Text="-"
-                        FontFamily="InetrBold"
+                        FontAttributes="Bold"
                         CornerRadius="100"
                         BackgroundColor="#3414B6" 
                         WidthRequest="25"
@@ -222,7 +235,7 @@
                 </StackLayout>
                 <StackLayout VerticalOptions="Center">
                     <Button Text="-"
-                            FontFamily="InetrBold"
+                            FontAttributes="Bold"
                             CornerRadius="100"
                             BackgroundColor="#3414B6" 
                             WidthRequest="25"
@@ -234,6 +247,7 @@
                 </StackLayout>
             </StackLayout>
         </DataTemplate>
+
         <template:ListTimeWaterPumpTemplate x:Key="CreateIrrigationRoutinesViewModel"
                                     CanDelete="{StaticResource CanDelete}"
                                     CanEditing="{StaticResource CanEditing}"

@@ -42,13 +42,6 @@ namespace PI_AQP.ViewModels.Routines
             sender.IsChecked = !sender.IsChecked;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(listWeekdays)));
         }
-        //public void WeekdayOption_Clicked(object sender, EventArgs e)
-        //{
-        //    sender.IsChecked = !sender.IsChecked;
-        //    Debug.WriteLine(sender.State);
-
-        //    VisualStateManager.GoToState(sender, "Selected");
-        //}
 
         public void Remove(TimingPumpModel sender)
         {

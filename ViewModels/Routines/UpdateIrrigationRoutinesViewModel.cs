@@ -4,14 +4,16 @@ using PI_AQP.Mapper;
 using PI_AQP.Models;
 using PI_AQP.Services;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Text.Json;
 using System.Windows.Input;
 
 namespace PI_AQP.ViewModels.Routines;
 
-public class UpdateIrrigationRoutinesViewModel
+public class UpdateIrrigationRoutinesViewModel : INotifyPropertyChanged
 {
+    public event PropertyChangedEventHandler? PropertyChanged;
     public RotinasDTO _rotina { get; set; }
     public ICommand WeekdayOption_Clicked { get; private set; }
     public ICommand BtSaving_Clicked { get; private set; }
@@ -61,7 +63,9 @@ public class UpdateIrrigationRoutinesViewModel
     public void SelectWeekdayOption(WeekDaysModel sender)
     {
         sender.IsChecked = !sender.IsChecked;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(listWeekdays)));
     }
+
 
     public void Remove(TimingPumpModel sender)
     {
