@@ -31,7 +31,7 @@ public class UpdateIrrigationRoutinesViewModel : INotifyPropertyChanged
     const string SERVICE_ROUTINES_UUID = "bb1db1b1-6696-4bfa-a140-8d5836e980c8";
     const string CHARACTERISTIC_UPDATE_ROUTINES_UUID = "4b9c96d4-cf69-45ca-a157-9ac8d0b7b155";
 
-    public UpdateIrrigationRoutinesViewModel(RotinasDTO rotina, bool []dw)
+    public UpdateIrrigationRoutinesViewModel(RotinasDTO rotina, bool[] dw)
     {
         _rotina = rotina;
         listWeekdays = _rotina.ToViewModelWeekDays(dw);

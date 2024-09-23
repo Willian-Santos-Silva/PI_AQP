@@ -2,7 +2,6 @@
 using Microsoft.Maui.Platform;
 using PI_AQP.Models;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 
 namespace PI_AQP.Mapper
 {
@@ -43,7 +42,7 @@ namespace PI_AQP.Mapper
                 horarios.Add(horario);
             }
             horarios.Last().VisualState = TimingPumpModel.CAN_EDITING;
-            if (horarios.Count == 1) 
+            if (horarios.Count == 1)
             {
                 horarios.First().VisualState = TimingPumpModel.DEFAULT;
             }
@@ -91,7 +90,7 @@ namespace PI_AQP.Mapper
                 rotina.horarios.OrderBy(p => p.start);
 
                 Periodo? nextHour = rotina.horarios.FirstOrDefault(periodo => periodo.EstaDentroDoPeriodo());
-                if(nextHour == null)
+                if (nextHour == null)
                 {
                     nextHour = rotina.horarios
                                 .FirstOrDefault(p => p.isNextPeriod());

@@ -3,6 +3,7 @@ using PI_AQP.Models;
 using PI_AQP.Services;
 using PI_AQP.ViewModels;
 using PI_AQP.Views;
+using PI_AQP.Views.Historico;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -51,7 +52,6 @@ namespace PI_AQP
         {
             _cts = new();
 
-
             RotinasViewModel = new ListRotinasViewModel();
 
             _device = new() { id = Guid.Parse(Preferences.Get("deviceID_BLE", "")) };
@@ -97,6 +97,10 @@ namespace PI_AQP
             {
                 Debug.WriteLine(e.Message, "erro config");
             }
+        }
+        private async void Temperature_Clicked(object sender, TappedEventArgs args)
+        {
+            await Shell.Current.GoToAsync(nameof(HistoryTemperaturePage));
         }
 
         private async void BtAdicionar_Clicked(object sender, EventArgs e)
@@ -183,7 +187,7 @@ namespace PI_AQP
             try
             {
                 TimeSpan duration = TimeSpan.FromSeconds(timing);
-                
+
                 var timer = TimeSpan.FromSeconds(tempo_restante);
 
                 await MainThread.InvokeOnMainThreadAsync(() =>
@@ -205,7 +209,7 @@ namespace PI_AQP
         public void ResetTimer()
         {
             _cts.Cancel();
-            _cts = new ();
+            _cts = new();
         }
 
     }

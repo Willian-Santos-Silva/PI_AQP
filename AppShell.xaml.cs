@@ -1,4 +1,5 @@
 ﻿using PI_AQP.Views;
+using PI_AQP.Views.Historico;
 
 namespace PI_AQP
 {
@@ -13,6 +14,8 @@ namespace PI_AQP
                 Routing.RegisterRoute(nameof(LoadingPage), typeof(LoadingPage));
                 Routing.RegisterRoute(nameof(CreateIrrigationRoutinePage), typeof(CreateIrrigationRoutinePage));
                 Routing.RegisterRoute(nameof(UpdateIrrigationRoutinePage), typeof(UpdateIrrigationRoutinePage));
+                Routing.RegisterRoute(nameof(HistoryTemperaturePage), typeof(HistoryTemperaturePage));
+
                 InitializeComponent();
             }
             catch (Exception ex)

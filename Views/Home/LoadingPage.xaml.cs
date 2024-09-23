@@ -18,9 +18,9 @@ public partial class LoadingPage : ContentPage
 
     public async void OnPageAppearing(object sender, EventArgs e)
     {
-        if(await CheckAndRequestPermissions())
+        if (await CheckAndRequestPermissions())
         {
-            if(Preferences.Get("deviceID_BLE", null) != null)
+            if (Preferences.Get("deviceID_BLE", null) != null)
             {
                 _device = new() { id = Guid.Parse(Preferences.Get("deviceID_BLE", "")) };
 

@@ -5,8 +5,6 @@ using PI_AQP.Models;
 using PI_AQP.Services;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
 using System.Text.Json;
 using System.Windows.Input;
 

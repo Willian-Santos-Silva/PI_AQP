@@ -87,6 +87,10 @@
                                     </Label>
                                 </Grid>
 
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="Temperature_Clicked"/>
+                                </Frame.GestureRecognizers>
+
                                 <Frame.Background>
                                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                                         <GradientStop Color="#611E80" Offset="0"/>

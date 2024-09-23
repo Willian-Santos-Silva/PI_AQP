@@ -1,9 +1,11 @@
 ﻿using Aquaponia.Domain.Interfaces;
 using CommunityToolkit.Maui;
+using Microcharts.Maui;
 using Microsoft.Extensions.Logging;
 using Microsoft.Maui.Handlers;
 using Microsoft.Maui.Platform;
 using PI_AQP.Services;
+using SkiaSharp.Views.Maui.Controls.Hosting;
 
 namespace PI_AQP
 {
@@ -11,7 +13,7 @@ namespace PI_AQP
     {
         public static MauiApp CreateMauiApp()
         {
-             var builder = MauiApp.CreateBuilder();
+            var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
                 .UseMauiCommunityToolkit()
@@ -25,7 +27,9 @@ namespace PI_AQP
                     fonts.AddFont("MaterialIcons-Regular.ttf", "GoogleMaterialIcons");
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-                });
+                })
+                .UseSkiaSharp()
+                .UseMicrocharts();
 
             builder.Services.AddSingleton<IDevicesConnectionService, BluetoothClientService>();
 #if DEBUG
