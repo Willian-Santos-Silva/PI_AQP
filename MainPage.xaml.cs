@@ -69,7 +69,12 @@ namespace PI_AQP
             listRotinas = RotinasViewModel.listRotinas;
             rotinasListView.ItemsSource = listRotinas;
 
-            t = Task.Run(async () =>
+            t = StartServices();
+        }
+
+        private Task StartServices()
+        {
+            return Task.Run(async () =>
             {
                 await RotinasViewModel.StartService();
 
@@ -80,7 +85,6 @@ namespace PI_AQP
                 await _pumpCaracteristica.OnStartUpdate();
                 tComplete.SetResult(true);
             });
-
         }
 
         protected override async void OnAppearing()
@@ -98,9 +102,30 @@ namespace PI_AQP
                 Debug.WriteLine(e.Message, "erro config");
             }
         }
+
+        //protected override async void OnDisappearing()
+        //{
+        //    try
+        //    {
+        //        if (await tComplete.Task)
+        //        {
+        //            await RotinasViewModel.Reload();
+        //            //await _pumpCaracteristica.Request();
+        //        }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Debug.WriteLine(e.Message, "erro config");
+        //    }
+        //}
+
         private async void Temperature_Clicked(object sender, TappedEventArgs args)
         {
             await Shell.Current.GoToAsync(nameof(HistoryTemperaturePage));
+        }
+        private async void Ph_Clicked(object sender, TappedEventArgs args)
+        {
+            await Shell.Current.GoToAsync(nameof(HistoryPhPage));
         }
 
         private async void BtAdicionar_Clicked(object sender, EventArgs e)
@@ -129,7 +154,7 @@ namespace PI_AQP
                 using var document = JsonDocument.Parse(response);
                 var root = document.RootElement;
 
-                dto.temperatura = root.GetProperty("temperatura").GetDouble();
+                dto.temperatura = root.GetProperty("ph").GetDouble();
                 dto.ph = root.GetProperty("ph").GetDouble();
                 dto.turbidade = root.GetProperty("ntu").GetDouble();
                 dto.status_heater = root.GetProperty("status_heater").GetBoolean();

@@ -17,20 +17,19 @@ using static AndroidX.Concurrent.Futures.CallbackToFutureAdapter;
 namespace PI_AQP.Views.Historico;
 
 
-public class HistoryTemperatureDTO
+public class HistoryPhDTO
 {
     public long timestamp { get; set; } = 0;
-    public float temperatura { get; set; } = -127;
+    public float ph { get; set; } = -127;
     public DateTime getData()
     {
         return DateTimeOffset.FromUnixTimeSeconds(timestamp).DateTime.ToLocalTime();
     }
 }
 
-public partial class HistoryTemperaturePage : ContentPage
+public partial class HistoryPhPage : ContentPage
 {
     const string SERVICE_UUID = "02be3f08-b74b-4038-aaa4-5020d1582eba";
-    const string CHARACTERISTIC_GET_HIST_TEMP_UUID = "23ffac66-d0f9-4dbb-bb10-2b92d3664760";
     const string CHARACTERISTIC_GET_HIST_PH_UUID = "c496fa32-b11a-460b-8dd3-1aeeb7c7f0ae";
 
     Task t;
@@ -40,12 +39,12 @@ public partial class HistoryTemperaturePage : ContentPage
     public BluetoothCaracteristica _historyCaracteristica;
 
 
-    List<HistoryTemperatureDTO> historyList = default!;
+    List<HistoryPhDTO> historyList = default!;
     List<ChartEntry> entries = default!;
-    public HistoryTemperaturePage()
+    public HistoryPhPage()
     {
         _device = new() { id = Guid.Parse(Preferences.Get("deviceID_BLE", "")) };
-        _historyCaracteristica = new BluetoothCaracteristica(_device.id, SERVICE_UUID, CHARACTERISTIC_GET_HIST_TEMP_UUID);
+        _historyCaracteristica = new BluetoothCaracteristica(_device.id, SERVICE_UUID, CHARACTERISTIC_GET_HIST_PH_UUID);
         _historyCaracteristica.CallbackOnUpdate(GetHistoryEndpoint);
 
         InitializeComponent();
@@ -69,15 +68,13 @@ public partial class HistoryTemperaturePage : ContentPage
             IsAnimated = false
         };
 
-        tComplete = new TaskCompletionSource<bool>();
-        t = Task.Run(async () =>
+        Task.Run(async () =>
         {
             try
             {
                 await _historyCaracteristica.StartService();
                 await _historyCaracteristica.OnStartUpdate();
                 await _historyCaracteristica.Request();
-                tComplete.SetResult(true);
             }
             catch (Exception e)
             {
@@ -86,6 +83,10 @@ public partial class HistoryTemperaturePage : ContentPage
         });
 
     }
+    //protected override async void OnAppearing()
+    //{
+    //    base.OnAppearing();
+    //}
 
     public void GetHistoryEndpoint(CharacteristicBluetoothDTO ble)
     {
@@ -96,15 +97,15 @@ public partial class HistoryTemperaturePage : ContentPage
             using var document = JsonDocument.Parse(response);
             var root = document.RootElement;
 
-            historyList = JsonSerializer.Deserialize<List<HistoryTemperatureDTO>>(root.GetProperty("history").GetString() ?? "[]") ?? new List<HistoryTemperatureDTO>();
+            historyList = JsonSerializer.Deserialize<List<HistoryPhDTO>>(root.GetProperty("history").GetString() ?? "[]") ?? new List<HistoryPhDTO>();
 
             MainThread.InvokeOnMainThreadAsync(() =>
             {
                 HistoryToEntries();
                 HistoryToTable();
 
-                Min.Text = root.GetProperty("min_temeperatura").GetDouble().ToString("N1") + "°C";
-                Max.Text = root.GetProperty("max_temeperatura").GetDouble().ToString("N1") + "°C";
+                Min.Text = root.GetProperty("min_ph").GetDouble().ToString("N1");
+                Max.Text = root.GetProperty("max_ph").GetDouble().ToString("N1");
             });
 
         }
@@ -120,11 +121,11 @@ public partial class HistoryTemperaturePage : ContentPage
 
         foreach (var history in historyList)
         {
-            entries.Add(new(history.temperatura)
+            entries.Add(new(history.ph)
             {
                 Label = history.getData().ToString("dd/MM/yyyy HH:mm"),
                 Color = SKColor.Parse("#fff"),
-                ValueLabel = history.temperatura.ToString("N1") + "°C",
+                ValueLabel = history.ph.ToString("N1") + "°C",
                 ValueLabelColor = SKColor.Parse("#fff"),
             });
         }
@@ -148,7 +149,7 @@ public partial class HistoryTemperaturePage : ContentPage
 
             tableHistory.Add(new Label
             {
-                Text = historyList[i].temperatura.ToString("N1") + "°C",
+                Text = historyList[i].ph.ToString("N1") + "°C",
                 HorizontalTextAlignment = TextAlignment.End,
                 FontFamily = "Inter",
                 Padding = new Thickness(16, 16),

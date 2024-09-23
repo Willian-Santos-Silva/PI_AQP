@@ -193,7 +193,8 @@ namespace PI_AQP.Services
         {
             dataBuffer.Clear();
             _characteristic.ValueUpdated += EventCallback;
-            await _characteristic.StartUpdatesAsync();
+            if(_characteristic.CanUpdate)
+                await _characteristic.StartUpdatesAsync();
         }
         public async Task OnPauseUpdate()
         {

@@ -21,6 +21,7 @@ namespace PI_AQP
                 Routing.RegisterRoute(nameof(CreateIrrigationRoutinePage), typeof(CreateIrrigationRoutinePage));
                 Routing.RegisterRoute(nameof(UpdateIrrigationRoutinePage), typeof(UpdateIrrigationRoutinePage));
                 Routing.RegisterRoute(nameof(HistoryTemperaturePage), typeof(HistoryTemperaturePage));
+                Routing.RegisterRoute(nameof(HistoryPhPage), typeof(HistoryPhPage));
 
                 UserAppTheme = AppTheme.Light;
                 InitializeComponent();

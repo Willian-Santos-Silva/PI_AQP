@@ -5,7 +5,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Maui.Handlers;
 using Microsoft.Maui.Platform;
 using PI_AQP.Services;
-using SkiaSharp.Views.Maui.Controls.Hosting;
 
 namespace PI_AQP
 {
@@ -15,6 +14,7 @@ namespace PI_AQP
         {
             var builder = MauiApp.CreateBuilder();
             builder
+                .UseMicrocharts()
                 .UseMauiApp<App>()
                 .UseMauiCommunityToolkit()
                 .ConfigureFonts(fonts =>
@@ -27,9 +27,8 @@ namespace PI_AQP
                     fonts.AddFont("MaterialIcons-Regular.ttf", "GoogleMaterialIcons");
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-                })
-                .UseSkiaSharp()
-                .UseMicrocharts();
+                });
+                //.UseSkiaSharp();
 
             builder.Services.AddSingleton<IDevicesConnectionService, BluetoothClientService>();
 #if DEBUG
