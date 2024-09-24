@@ -155,8 +155,6 @@ public partial class HistoryTemperaturePage : ContentPage, INotifyPropertyChange
             }
 
             HistoryChart.Entries = entries;
-
-            HistoryChart.Entries = entries;
         });
     }
 

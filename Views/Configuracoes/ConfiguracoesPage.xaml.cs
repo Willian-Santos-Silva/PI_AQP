@@ -13,7 +13,6 @@ namespace PI_AQP.Views;
 
 public partial class ConfiguracoesPage : ContentPage, INotifyPropertyChanged
 {
-    public ICommand OnSaveChanges { get; set; }
     private Configuracao _configuracao;
     public Configuracao configuracao
     {
@@ -31,20 +30,23 @@ public partial class ConfiguracoesPage : ContentPage, INotifyPropertyChanged
     public event PropertyChangedEventHandler PropertyChanged;
 
     private BluetoothCaracteristica _configuracaoCaracteristica;
+    private BluetoothCaracteristica _rtcCaracteristica;
     private DevicesBluetoothDTO _device;
 
     const string SERVICE_UUID = "02be3f08-b74b-4038-aaa4-5020d1582eba";
     const string CHARACTERISTIC_CONFIGURATION_UUID = "b371220d-3559-410d-8a47-78b06df6eb3a";
+    const string CHARACTERISTIC_RTC_UUID = "b371220d-3559-410d-8a47-78b06df6eb3a";
 
     public ConfiguracoesPage()
     {
-        OnSaveChanges = new Command<InputNumberView>(SaveChange);
         configuracao = new();
         BindingContext = this;
 
         _device = new() { id = Guid.Parse(Preferences.Get("deviceID_BLE", "")) };
         _configuracaoCaracteristica = new BluetoothCaracteristica(_device.id, SERVICE_UUID, CHARACTERISTIC_CONFIGURATION_UUID);
         _configuracaoCaracteristica.CallbackOnUpdate(GetConfiguration);
+
+        _rtcCaracteristica = new BluetoothCaracteristica(_device.id, SERVICE_UUID, CHARACTERISTIC_RTC_UUID);
 
         InitializeComponent();
 
@@ -55,6 +57,8 @@ public partial class ConfiguracoesPage : ContentPage, INotifyPropertyChanged
                 await _configuracaoCaracteristica.StartService();
                 await _configuracaoCaracteristica.OnStartUpdate();
                 await _configuracaoCaracteristica.Request();
+            
+                await _rtcCaracteristica.StartService();
             }
             catch (Exception e)
             {
@@ -62,15 +66,27 @@ public partial class ConfiguracoesPage : ContentPage, INotifyPropertyChanged
             }
         });
     }
-
+    private async void SalvarDataEHora(object sender, TappedEventArgs args)
+    {
+        try
+        {
+            _configuracao.rtc = new DateTimeOffset(_configuracao.dataRTC).ToUnixTimeSeconds();
+            await _rtcCaracteristica.SendMessage(JsonSerializer.Serialize(new { rtc = _configuracao.rtc }));
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message, "save");
+        }
+    }
     private void GetConfiguration(CharacteristicBluetoothDTO ble)
     {
         try
         {
             string response = Encoding.UTF8.GetString(ble.Value);
 
+            
             ConfiguracoesDTO? dto = JsonSerializer.Deserialize<ConfiguracoesDTO>(response) ?? new ConfiguracoesDTO();
-            dto.rtc = DateTimeOffset.Now.ToUnixTimeSeconds();
+            //dto.rtc = DateTimeOffset.Now.ToUnixTimeSeconds();
             MainThread.InvokeOnMainThreadAsync(() =>
             {
                 configuracao = dto.ToModel();
@@ -82,18 +98,6 @@ public partial class ConfiguracoesPage : ContentPage, INotifyPropertyChanged
         }
     }
 
-    public async void SaveChange(InputNumberView e)
-    {
-        try
-        {
-            _configuracao.rtc = DateTimeOffset.Now.ToUnixTimeSeconds();
-            await _configuracaoCaracteristica.SendMessage(JsonSerializer.Serialize(new { rtc = _configuracao.rtc }));
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine(ex.Message, "save");
-        }
-    }
     public async void SaveRTC(InputNumberView e)
     {
         try

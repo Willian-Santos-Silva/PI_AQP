@@ -14,6 +14,7 @@ namespace PI_AQP.Mapper
                 min_ph = configuracoes.min_ph,
                 max_ph = configuracoes.max_ph,
                 dosagem = configuracoes.dosagem,
+                rtc = configuracoes.rtc,
                 tempo_reaplicacao = TimeSpan.FromSeconds(configuracoes.tempo_reaplicacao),
             };
         }
@@ -25,6 +26,7 @@ namespace PI_AQP.Mapper
                 max_temperature = configuracoes.max_temperatura,
                 min_ph = configuracoes.min_ph,
                 max_ph = configuracoes.max_ph,
+                rtc = configuracoes.rtc,
                 dosagem = configuracoes.dosagem
             };
         }
