@@ -8,7 +8,8 @@
     <ScrollView VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Padding="0,0,0,16">
         <VerticalStackLayout  VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
             <StackLayout Background="{StaticResource Primary}">
-                <charts:ChartView x:Name="chartView" HeightRequest="300" Margin="8,16"/>
+                <charts:ChartView x:Name="chartView" Chart="{Binding HistoryChart}" HeightRequest="300" Margin="8,16">
+                </charts:ChartView>
             </StackLayout>
 
             <StackLayout Margin="16, 32" Orientation="Horizontal" Spacing="16">

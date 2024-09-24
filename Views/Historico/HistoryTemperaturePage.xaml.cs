@@ -1,18 +1,12 @@
 
-
-using Android.Health.Connect.DataTypes.Units;
 using Aquaponia.Domain.Entities;
-using Aquaponia.DTO.Entities;
 using Microcharts;
 using PI_AQP.Services;
-using PI_AQP.ViewModels;
 using SkiaSharp;
-using System;
-using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
-using static AndroidX.Concurrent.Futures.CallbackToFutureAdapter;
 
 namespace PI_AQP.Views.Historico;
 
@@ -27,14 +21,12 @@ public class HistoryTemperatureDTO
     }
 }
 
-public partial class HistoryTemperaturePage : ContentPage
+public partial class HistoryTemperaturePage : ContentPage, INotifyPropertyChanged
 {
+    public event PropertyChangedEventHandler PropertyChanged;
+
     const string SERVICE_UUID = "02be3f08-b74b-4038-aaa4-5020d1582eba";
     const string CHARACTERISTIC_GET_HIST_TEMP_UUID = "23ffac66-d0f9-4dbb-bb10-2b92d3664760";
-    const string CHARACTERISTIC_GET_HIST_PH_UUID = "c496fa32-b11a-460b-8dd3-1aeeb7c7f0ae";
-
-    Task t;
-    TaskCompletionSource<bool> tComplete;
 
     public DevicesBluetoothDTO _device;
     public BluetoothCaracteristica _historyCaracteristica;
@@ -42,42 +34,65 @@ public partial class HistoryTemperaturePage : ContentPage
 
     List<HistoryTemperatureDTO> historyList = default!;
     List<ChartEntry> entries = default!;
+
+    private LineChart _HistoryChart;
+    public LineChart HistoryChart
+    {
+        get { return _HistoryChart; }
+        set
+        {
+            _HistoryChart = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HistoryChart)));
+        }
+    }
     public HistoryTemperaturePage()
     {
         _device = new() { id = Guid.Parse(Preferences.Get("deviceID_BLE", "")) };
         _historyCaracteristica = new BluetoothCaracteristica(_device.id, SERVICE_UUID, CHARACTERISTIC_GET_HIST_TEMP_UUID);
         _historyCaracteristica.CallbackOnUpdate(GetHistoryEndpoint);
 
-        InitializeComponent();
         entries = new List<ChartEntry>();
-        chartView.Chart = new LineChart
+        historyList = new List<HistoryTemperatureDTO>();
+
+
+        entries.Add(new(0)
+        {
+            Label = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+            Color = SKColor.Parse("#fff"),
+            ValueLabel = "",
+            ValueLabelColor = SKColor.Parse("#fff"),
+        });
+
+
+        HistoryChart = new LineChart
         {
             Entries = entries,
             ValueLabelOption = ValueLabelOption.TopOfElement,
             ValueLabelTextSize = 24,
             ValueLabelOrientation = Orientation.Horizontal,
-            
-            BackgroundColor = SKColor.FromHsl(0,0,0,0),
+
+            BackgroundColor = SKColor.FromHsl(0, 0, 0, 0),
             ShowYAxisLines = true,
             ShowYAxisText = true,
             YAxisPosition = Position.Left,
-            YAxisTextPaint =  new SKPaint() { Color = SKColor.Parse("#fff"), TextSize = 24 },
-            YAxisLinesPaint =  new SKPaint() { Color = SKColor.Parse("#153D8C") },
+            YAxisTextPaint = new SKPaint() { Color = SKColor.Parse("#fff"), TextSize = 24 },
+            YAxisLinesPaint = new SKPaint() { Color = SKColor.Parse("#153D8C") },
             LabelOrientation = Orientation.Vertical,
             LabelColor = SKColor.Parse("#fff"),
             LabelTextSize = 24,
             IsAnimated = false
         };
 
-        tComplete = new TaskCompletionSource<bool>();
-        t = Task.Run(async () =>
+        InitializeComponent();
+        BindingContext = this;
+
+        Task.Run(async () =>
         {
             try
             {
                 await _historyCaracteristica.StartService();
                 await _historyCaracteristica.OnStartUpdate();
                 await _historyCaracteristica.Request();
-                tComplete.SetResult(true);
             }
             catch (Exception e)
             {
@@ -96,15 +111,22 @@ public partial class HistoryTemperaturePage : ContentPage
             using var document = JsonDocument.Parse(response);
             var root = document.RootElement;
 
-            historyList = JsonSerializer.Deserialize<List<HistoryTemperatureDTO>>(root.GetProperty("history").GetString() ?? "[]") ?? new List<HistoryTemperatureDTO>();
+            JsonElement j;
+            if (root.TryGetProperty("history", out j))
+                historyList = JsonSerializer.Deserialize<List<HistoryTemperatureDTO>>(j) ?? new List<HistoryTemperatureDTO>();
+
+
+
+            int min = root.GetProperty("min_temperatura").GetInt16();
+            int max = root.GetProperty("max_temperatura").GetInt16();
 
             MainThread.InvokeOnMainThreadAsync(() =>
             {
                 HistoryToEntries();
                 HistoryToTable();
 
-                Min.Text = root.GetProperty("min_temeperatura").GetDouble().ToString("N1") + "°C";
-                Max.Text = root.GetProperty("max_temeperatura").GetDouble().ToString("N1") + "°C";
+                Min.Text = min.ToString("N1") + "°C";
+                Max.Text = max.ToString("N1") + "°C";
             });
 
         }
@@ -116,18 +138,26 @@ public partial class HistoryTemperaturePage : ContentPage
 
     public void HistoryToEntries()
     {
-        historyList.OrderBy(h => h.timestamp);
-
-        foreach (var history in historyList)
+        MainThread.InvokeOnMainThreadAsync(() =>
         {
-            entries.Add(new(history.temperatura)
+            historyList.OrderBy(h => h.timestamp);
+
+
+            foreach (var history in historyList)
             {
-                Label = history.getData().ToString("dd/MM/yyyy HH:mm"),
-                Color = SKColor.Parse("#fff"),
-                ValueLabel = history.temperatura.ToString("N1") + "°C",
-                ValueLabelColor = SKColor.Parse("#fff"),
-            });
-        }
+                entries.Add(new(history.temperatura)
+                {
+                    Label = history.getData().ToString("dd/MM/yyyy HH:mm"),
+                    Color = SKColor.Parse("#fff"),
+                    ValueLabel = history.temperatura.ToString("N1") + "°C",
+                    ValueLabelColor = SKColor.Parse("#fff"),
+                });
+            }
+
+            HistoryChart.Entries = entries;
+
+            HistoryChart.Entries = entries;
+        });
     }
 
     public void HistoryToTable()

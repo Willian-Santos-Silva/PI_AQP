@@ -1,18 +1,14 @@
 
 
-using Android.Health.Connect.DataTypes.Units;
 using Aquaponia.Domain.Entities;
-using Aquaponia.DTO.Entities;
 using Microcharts;
 using PI_AQP.Services;
-using PI_AQP.ViewModels;
 using SkiaSharp;
-using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
-using static AndroidX.Concurrent.Futures.CallbackToFutureAdapter;
 
 namespace PI_AQP.Views.Historico;
 
@@ -27,46 +23,74 @@ public class HistoryPhDTO
     }
 }
 
-public partial class HistoryPhPage : ContentPage
+public partial class HistoryPhPage : ContentPage, INotifyPropertyChanged
 {
+    public event PropertyChangedEventHandler PropertyChanged;
+
     const string SERVICE_UUID = "02be3f08-b74b-4038-aaa4-5020d1582eba";
     const string CHARACTERISTIC_GET_HIST_PH_UUID = "c496fa32-b11a-460b-8dd3-1aeeb7c7f0ae";
 
     Task t;
     TaskCompletionSource<bool> tComplete;
 
-    public DevicesBluetoothDTO _device;
-    public BluetoothCaracteristica _historyCaracteristica;
+    private DevicesBluetoothDTO _device;
+    private BluetoothCaracteristica _historyCaracteristica;
 
 
     List<HistoryPhDTO> historyList = default!;
-    List<ChartEntry> entries = default!;
+    List<ChartEntry> entries { get; set; }
+
+    private LineChart _HistoryChart;
+    public LineChart HistoryChart
+    {
+        get { return _HistoryChart; }
+        set
+        {
+            _HistoryChart = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HistoryChart)));
+        }
+    }
     public HistoryPhPage()
     {
         _device = new() { id = Guid.Parse(Preferences.Get("deviceID_BLE", "")) };
         _historyCaracteristica = new BluetoothCaracteristica(_device.id, SERVICE_UUID, CHARACTERISTIC_GET_HIST_PH_UUID);
         _historyCaracteristica.CallbackOnUpdate(GetHistoryEndpoint);
 
-        InitializeComponent();
+
         entries = new List<ChartEntry>();
-        chartView.Chart = new LineChart
+        historyList = new List<HistoryPhDTO>();
+
+        entries.Add(new(0)
         {
+            Label = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
+            Color = SKColor.Parse("#fff"),
+            ValueLabel = "",
+            ValueLabelColor = SKColor.Parse("#fff"),
+        });
+
+
+        HistoryChart = new LineChart
+        { 
             Entries = entries,
             ValueLabelOption = ValueLabelOption.TopOfElement,
             ValueLabelTextSize = 24,
             ValueLabelOrientation = Orientation.Horizontal,
-            
-            BackgroundColor = SKColor.FromHsl(0,0,0,0),
+
+            BackgroundColor = SKColor.FromHsl(0, 0, 0, 0),
             ShowYAxisLines = true,
             ShowYAxisText = true,
             YAxisPosition = Position.Left,
-            YAxisTextPaint =  new SKPaint() { Color = SKColor.Parse("#fff"), TextSize = 24 },
-            YAxisLinesPaint =  new SKPaint() { Color = SKColor.Parse("#153D8C") },
+            YAxisTextPaint = new SKPaint() { Color = SKColor.Parse("#fff"), TextSize = 24 },
+            YAxisLinesPaint = new SKPaint() { Color = SKColor.Parse("#153D8C") },
             LabelOrientation = Orientation.Vertical,
             LabelColor = SKColor.Parse("#fff"),
             LabelTextSize = 24,
             IsAnimated = false
         };
+
+        InitializeComponent();
+        BindingContext = this;
+
 
         Task.Run(async () =>
         {
@@ -83,12 +107,8 @@ public partial class HistoryPhPage : ContentPage
         });
 
     }
-    //protected override async void OnAppearing()
-    //{
-    //    base.OnAppearing();
-    //}
 
-    public void GetHistoryEndpoint(CharacteristicBluetoothDTO ble)
+    private void GetHistoryEndpoint(CharacteristicBluetoothDTO ble)
     {
         try
         {
@@ -97,15 +117,20 @@ public partial class HistoryPhPage : ContentPage
             using var document = JsonDocument.Parse(response);
             var root = document.RootElement;
 
-            historyList = JsonSerializer.Deserialize<List<HistoryPhDTO>>(root.GetProperty("history").GetString() ?? "[]") ?? new List<HistoryPhDTO>();
+            JsonElement j;
+            if(root.TryGetProperty("history", out j))
+                historyList = JsonSerializer.Deserialize<List<HistoryPhDTO>>(j) ?? new List<HistoryPhDTO>();
+
+            int min = root.GetProperty("min_ph").GetInt16();
+            int max = root.GetProperty("max_ph").GetInt16();
 
             MainThread.InvokeOnMainThreadAsync(() =>
             {
                 HistoryToEntries();
                 HistoryToTable();
 
-                Min.Text = root.GetProperty("min_ph").GetDouble().ToString("N1");
-                Max.Text = root.GetProperty("max_ph").GetDouble().ToString("N1");
+                Min.Text = min.ToString("N1");
+                Max.Text = max.ToString("N1");
             });
 
         }
@@ -117,18 +142,23 @@ public partial class HistoryPhPage : ContentPage
 
     public void HistoryToEntries()
     {
-        historyList.OrderBy(h => h.timestamp);
-
-        foreach (var history in historyList)
+        MainThread.InvokeOnMainThreadAsync(() =>
         {
-            entries.Add(new(history.ph)
+            historyList.OrderBy(h => h.timestamp);
+
+            foreach (var history in historyList)
             {
-                Label = history.getData().ToString("dd/MM/yyyy HH:mm"),
-                Color = SKColor.Parse("#fff"),
-                ValueLabel = history.ph.ToString("N1") + "°C",
-                ValueLabelColor = SKColor.Parse("#fff"),
-            });
-        }
+                entries.Add(new(history.ph)
+                {
+                    Label = history.getData().ToString("dd/MM/yyyy HH:mm"),
+                    Color = SKColor.Parse("#fff"),
+                    ValueLabel = history.ph.ToString("N1"),
+                    ValueLabelColor = SKColor.Parse("#fff"),
+                });
+            }
+
+            HistoryChart.Entries = entries;
+        });
     }
 
     public void HistoryToTable()
@@ -149,7 +179,7 @@ public partial class HistoryPhPage : ContentPage
 
             tableHistory.Add(new Label
             {
-                Text = historyList[i].ph.ToString("N1") + "°C",
+                Text = historyList[i].ph.ToString("N1"),
                 HorizontalTextAlignment = TextAlignment.End,
                 FontFamily = "Inter",
                 Padding = new Thickness(16, 16),

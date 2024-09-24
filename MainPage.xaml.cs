@@ -154,7 +154,7 @@ namespace PI_AQP
                 using var document = JsonDocument.Parse(response);
                 var root = document.RootElement;
 
-                dto.temperatura = root.GetProperty("ph").GetDouble();
+                dto.temperatura = root.GetProperty("temperatura").GetDouble();
                 dto.ph = root.GetProperty("ph").GetDouble();
                 dto.turbidade = root.GetProperty("ntu").GetDouble();
                 dto.status_heater = root.GetProperty("status_heater").GetBoolean();

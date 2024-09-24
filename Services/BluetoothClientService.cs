@@ -189,12 +189,12 @@ namespace PI_AQP.Services
         }
 
 
-        public async Task OnStartUpdate()
+        public Task OnStartUpdate()
         {
             dataBuffer.Clear();
             _characteristic.ValueUpdated += EventCallback;
-            if(_characteristic.CanUpdate)
-                await _characteristic.StartUpdatesAsync();
+            //if(_characteristic.CanUpdate)
+                return _characteristic.StartUpdatesAsync();
         }
         public async Task OnPauseUpdate()
         {
