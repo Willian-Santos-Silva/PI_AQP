@@ -59,7 +59,7 @@ public partial class ConfiguracoesPage : ContentPage, INotifyPropertyChanged
                 await _configuracaoCaracteristica.StartService();
                 await _configuracaoCaracteristica.OnStartUpdate();
                 await _configuracaoCaracteristica.Request();
-            
+
                 await _rtcCaracteristica.StartService();
             }
             catch (Exception e)
@@ -67,6 +67,20 @@ public partial class ConfiguracoesPage : ContentPage, INotifyPropertyChanged
                 Debug.WriteLine(e.Message);
             }
         });
+    }
+    private async void AtualizarTempoReaplicacao(object sender, TappedEventArgs args)
+    {
+        string result = await DisplayPromptAsync("Question 2", "What's 5 + 5?", initialValue: "10", maxLength: 2, keyboard: Keyboard.Numeric);
+        try
+        {
+            _configuracao.rtc = new DateTimeOffset(_configuracao.dataRTC.AddTicks(_configuracao.timeRTC.Ticks)).ToUnixTimeSeconds();
+
+            await _rtcCaracteristica.SendMessage(JsonSerializer.Serialize(new { rtc = _configuracao.rtc }));
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message, "save");
+        }
     }
     private async void SalvarDataEHora(object sender, TappedEventArgs args)
     {
@@ -87,7 +101,7 @@ public partial class ConfiguracoesPage : ContentPage, INotifyPropertyChanged
         {
             string response = Encoding.UTF8.GetString(ble.Value);
 
-            
+
             ConfiguracoesDTO? dto = JsonSerializer.Deserialize<ConfiguracoesDTO>(response) ?? new ConfiguracoesDTO();
             //dto.rtc = DateTimeOffset.Now.ToUnixTimeSeconds();
             MainThread.InvokeOnMainThreadAsync(() =>
@@ -103,7 +117,7 @@ public partial class ConfiguracoesPage : ContentPage, INotifyPropertyChanged
     public async void SaveChange(InputNumberView e)
     {
         await MainThread.InvokeOnMainThreadAsync(async () =>
-        { 
+        {
             try
             {
                 await _configuracaoCaracteristica.SendMessage(JsonSerializer.Serialize<ConfiguracoesDTO>(_configuracao.ToDTO()));

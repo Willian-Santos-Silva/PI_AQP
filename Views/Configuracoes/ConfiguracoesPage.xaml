@@ -39,14 +39,20 @@
                     <HorizontalStackLayout Spacing="32">
                         <StackLayout Spacing="0">
                             <Label Text="Min" Style="{StaticResource SubLabelForm}"></Label>
-                            <views:InputNumberView Value="{Binding configuracao.min_temperatura, Mode=TwoWay}"
+                            <views:InputNumberView x:Name="MinTemperatura"
+                                                   Value="{Binding configuracao.min_temperatura, Mode=TwoWay}"
+                                                   MinValue="0"
+                                                   MaxValue="60"
                                                    IsEditing="False"
                                                    UnitMeasure="ºC"
                                                    CommandSave="{Binding OnSaveChanges}"/>
                         </StackLayout>
                         <StackLayout >
                             <Label Text="Max" Style="{StaticResource SubLabelForm}"></Label>
-                            <views:InputNumberView Value="{Binding configuracao.max_temperatura, Mode=TwoWay}"
+                            <views:InputNumberView x:Name="MaxTemperatura"
+                                                   Value="{Binding configuracao.max_temperatura, Mode=TwoWay}"
+                                                   MinValue="0"
+                                                   MaxValue="60"
                                                    IsEditing="False"
                                                    UnitMeasure="ºC"
                                                    CommandSave="{Binding OnSaveChanges, Mode=TwoWay}"/>
@@ -59,13 +65,19 @@
                     <HorizontalStackLayout Spacing="32">
                         <StackLayout >
                             <Label Text="Min" Style="{StaticResource SubLabelForm}"></Label>
-                            <views:InputNumberView Value="{Binding configuracao.min_ph, Mode=TwoWay}"
-                                                   IsEditing="False" MaxValue="500"
+                            <views:InputNumberView x:Name="MinPh"
+                                                   Value="{Binding configuracao.min_ph, Mode=TwoWay}"
+                                                   MinValue="1"
+                                                   MaxValue="14"
+                                                   IsEditing="False"
                                                    CommandSave="{Binding OnSaveChanges, Mode=TwoWay}"/>
                         </StackLayout>
                         <StackLayout >
                             <Label Text="Max" Style="{StaticResource SubLabelForm}"></Label>
-                            <views:InputNumberView Value="{Binding configuracao.max_ph, Mode=TwoWay}"
+                            <views:InputNumberView x:Name="MaxPh"
+                                                   MinValue="1"
+                                                   MaxValue="14"
+                                                   Value="{Binding configuracao.max_ph, Mode=TwoWay}"
                                                    IsEditing="False"
                                                    CommandSave="{Binding OnSaveChanges, Mode=TwoWay}"/>
                         </StackLayout>
@@ -73,27 +85,26 @@
                 </StackLayout>
 
                 <StackLayout>
-                    <Label Text="Solução (Ácida)" Style="{StaticResource LabelForm}"></Label>
+                    <Label Text="Aplicar solução" Style="{StaticResource LabelForm}"></Label>
                     <HorizontalStackLayout Spacing="32">
-                        <StackLayout >
-                            <Label Text="Aplicar" Style="{StaticResource SubLabelForm}"></Label>
-                            <views:InputNumberView Value="{Binding configuracao.dosagem_solucao_acida, Mode=TwoWay}"
-                                           IsEditing="False"
-                                           UnitMeasure="ml/L"
-                                           CommandSave="{Binding OnSaveChanges, Mode=TwoWay}"/>
+                        <StackLayout>
+                            <Label Text="Ácida" Style="{StaticResource SubLabelForm}"></Label>
+                            <views:InputNumberView x:Name="DosagemAcida"
+                                                   Value="{Binding configuracao.dosagem_solucao_acida, Mode=TwoWay}"
+                                                   MinValue="0"
+                                                   IsEditing="False"
+                                                   UnitMeasure="ml/L"
+                                                   CommandSave="{Binding OnSaveChanges, Mode=TwoWay}"/>
                         </StackLayout>
-                    </HorizontalStackLayout>
-                </StackLayout>
-            
-                <StackLayout>
-                    <Label Text="Solução (Base)" Style="{StaticResource LabelForm}"></Label>
-                    <HorizontalStackLayout Spacing="32">
+                        
                         <StackLayout >
-                            <Label Text="Aplicar" Style="{StaticResource SubLabelForm}"></Label>
-                            <views:InputNumberView Value="{Binding configuracao.dosagem_solucao_base, Mode=TwoWay}"
-                                           IsEditing="False"
-                                           UnitMeasure="ml/L"
-                                           CommandSave="{Binding OnSaveChanges, Mode=TwoWay}"/>
+                            <Label Text="Base" Style="{StaticResource SubLabelForm}"></Label>
+                            <views:InputNumberView x:Name="DosagemBase"
+                                                   Value="{Binding configuracao.dosagem_solucao_base, Mode=TwoWay}"
+                                                   MinValue="0"
+                                                   IsEditing="False"
+                                                   UnitMeasure="ml/L"
+                                                   CommandSave="{Binding OnSaveChanges, Mode=TwoWay}"/>
                         </StackLayout>
                     </HorizontalStackLayout>
                 </StackLayout>
@@ -104,7 +115,7 @@
                     <StackLayout Spacing="16"
                                  Orientation="Horizontal">
                         <StackLayout Spacing="8"
-                                 Orientation="Horizontal">
+                                     Orientation="Horizontal">
                             <Frame MaximumWidthRequest="164" BackgroundColor="Transparent">
                                 <TimePicker HorizontalOptions="FillAndExpand"
                                             Time="{Binding configuracao.tempo_reaplicacao, Mode=TwoWay}"
@@ -118,10 +129,10 @@
 
                         <Frame Padding="16,8" BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryDark}, Dark={StaticResource SecondaryDark}}">
                             <StackLayout Orientation="Horizontal" Spacing="8">
-                                <Label Text="refresh"
+                                <!--<Label Text="refresh"
                                        FontFamily="GoogleMaterialIcons"
                                        VerticalOptions="Center"
-                                       TextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource PrimaryDarkText}}"></Label>
+                                       TextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource PrimaryDarkText}}"></Label>-->
 
                                 <Label Text="Atualizar"
                                        FontFamily="InterBold"

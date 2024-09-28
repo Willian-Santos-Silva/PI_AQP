@@ -1,7 +1,4 @@
-using CommunityToolkit.Maui.Behaviors;
 using PI_AQP.ViewModels.Routines;
-using System.ComponentModel;
-using System.Text.RegularExpressions;
 
 namespace PI_AQP.Views;
 

@@ -4,7 +4,6 @@ using Aquaponia.Domain.Entities;
 using Microcharts;
 using PI_AQP.Services;
 using SkiaSharp;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Text;
@@ -70,7 +69,7 @@ public partial class HistoryPhPage : ContentPage, INotifyPropertyChanged
 
 
         HistoryChart = new LineChart
-        { 
+        {
             Entries = entries,
             ValueLabelOption = ValueLabelOption.TopOfElement,
             ValueLabelTextSize = 24,
@@ -118,7 +117,7 @@ public partial class HistoryPhPage : ContentPage, INotifyPropertyChanged
             var root = document.RootElement;
 
             JsonElement j;
-            if(root.TryGetProperty("history", out j))
+            if (root.TryGetProperty("history", out j))
                 historyList = JsonSerializer.Deserialize<List<HistoryPhDTO>>(j) ?? new List<HistoryPhDTO>();
 
             int min = root.GetProperty("min_ph").GetInt16();

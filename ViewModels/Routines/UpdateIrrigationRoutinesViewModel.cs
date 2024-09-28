@@ -32,7 +32,7 @@ public class UpdateIrrigationRoutinesViewModel : INotifyPropertyChanged
     public int Intervalo
     {
         get { return _intervalo; }
-        set {  _intervalo = value; }
+        set { _intervalo = value; }
     }
 
     private NumericBehavior _intervaloValidacao;

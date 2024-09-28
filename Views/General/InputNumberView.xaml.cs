@@ -111,6 +111,7 @@ public partial class InputNumberView : ContentView
     void OnEnableEditing(object sender, TappedEventArgs args)
     {
         IsEditing = true;
+        _flagValue = Value;
     }
     void OnCommandSave(object sender, TappedEventArgs args)
     {

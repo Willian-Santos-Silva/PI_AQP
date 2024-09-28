@@ -48,9 +48,10 @@ namespace PI_AQP.ViewModels.Routines
         public bool[] _dw;
 
         public bool _weekdaysIsValid = !true;
-        public bool WeekdaysIsValid { 
+        public bool WeekdaysIsValid
+        {
             get { return _weekdaysIsValid; }
-            set { _weekdaysIsValid = value;  OnPropertyChanged();  }
+            set { _weekdaysIsValid = value; OnPropertyChanged(); }
         }
 
         public CreateIrrigationRoutinesViewModel(bool[] dw)
@@ -65,7 +66,8 @@ namespace PI_AQP.ViewModels.Routines
             BtRemover_Clicked = new Command<TimingPumpModel>(Remove);
             BtSaving_Clicked = new Command(Saving);
 
-            IntervaloValidacao = new NumericBehavior() {
+            IntervaloValidacao = new NumericBehavior()
+            {
                 MinValue = 1,
                 MaxValue = 1440
             };
@@ -96,7 +98,7 @@ namespace PI_AQP.ViewModels.Routines
             if (listRotinas.Count <= 0)
             {
                 return;
-            } 
+            }
 
             var lastTime = listRotinas.Last();
 

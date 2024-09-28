@@ -28,7 +28,7 @@ namespace PI_AQP
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
-                //.UseSkiaSharp();
+            //.UseSkiaSharp();
 
             builder.Services.AddSingleton<IDevicesConnectionService, BluetoothClientService>();
 #if DEBUG
