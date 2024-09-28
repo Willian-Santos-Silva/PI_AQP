@@ -7,6 +7,7 @@ namespace PI_AQP.Templates
         public DataTemplate CanDelete { get; set; } = default!;
         public DataTemplate CanEditing { get; set; } = default!;
         public DataTemplate Default { get; set; } = default!;
+        public DataTemplate Invalid { get; set; } = default!;
 
         protected override DataTemplate OnSelectTemplate(object item, BindableObject container)
         {
@@ -20,6 +21,8 @@ namespace PI_AQP.Templates
                     return CanDelete;
                 case TimingPumpModel.CAN_EDITING:
                     return CanEditing;
+                case TimingPumpModel.INVALID:
+                    return Invalid;
             }
         }
     }

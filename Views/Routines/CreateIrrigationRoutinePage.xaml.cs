@@ -1,4 +1,7 @@
+using CommunityToolkit.Maui.Behaviors;
 using PI_AQP.ViewModels.Routines;
+using System.ComponentModel;
+using System.Text.RegularExpressions;
 
 namespace PI_AQP.Views;
 
@@ -16,6 +19,8 @@ public partial class CreateIrrigationRoutinePage : ContentPage
             _dw = value;
 
             _irrigationRoutinesViewModel = new CreateIrrigationRoutinesViewModel(_dw);
+            intervalo.Behaviors.Add(_irrigationRoutinesViewModel.IntervaloValidacao);
+
             BindingContext = _irrigationRoutinesViewModel;
             OnPropertyChanged();
         }
@@ -25,4 +30,5 @@ public partial class CreateIrrigationRoutinePage : ContentPage
     {
         InitializeComponent();
     }
+
 }

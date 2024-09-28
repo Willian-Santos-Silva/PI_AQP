@@ -116,7 +116,7 @@ public partial class InputNumberView : ContentView
     {
         if (CommandSave != null)
         {
-            CommandSave.Execute(this);
+            //CommandSave.Execute(this);
             IsEditing = false;
             _flagValue = Value;
         }

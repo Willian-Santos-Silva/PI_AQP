@@ -13,9 +13,13 @@ namespace PI_AQP.Mapper
                 max_temperatura = configuracoes.max_temperature,
                 min_ph = configuracoes.min_ph,
                 max_ph = configuracoes.max_ph,
-                dosagem = configuracoes.dosagem,
+                dosagem_solucao_acida = configuracoes.dosagem_solucao_acida,
+                dosagem_solucao_base = configuracoes.dosagem_solucao_base,
                 rtc = configuracoes.rtc,
+                dataRTC = DateTimeOffset.FromUnixTimeSeconds(configuracoes.rtc).Date.ToLocalTime(),
+                timeRTC = DateTimeOffset.FromUnixTimeSeconds(configuracoes.rtc).DateTime.ToLocalTime().TimeOfDay,
                 tempo_reaplicacao = TimeSpan.FromSeconds(configuracoes.tempo_reaplicacao),
+                //tempo_reaplicacao = DateTimeOffset.FromUnixTimeSeconds(configuracoes.tempo_reaplicacao).DateTime.ToLocalTime().TimeOfDay,
             };
         }
         public static ConfiguracoesDTO ToDTO(this Configuracao configuracoes)
@@ -26,8 +30,10 @@ namespace PI_AQP.Mapper
                 max_temperature = configuracoes.max_temperatura,
                 min_ph = configuracoes.min_ph,
                 max_ph = configuracoes.max_ph,
-                rtc = configuracoes.rtc,
-                dosagem = configuracoes.dosagem
+                dosagem_solucao_acida = configuracoes.dosagem_solucao_acida,
+                dosagem_solucao_base = configuracoes.dosagem_solucao_base,
+                tempo_reaplicacao = (long)configuracoes.tempo_reaplicacao.TotalSeconds,
+                rtc = configuracoes.rtc
             };
         }
     }

@@ -17,6 +17,8 @@
     <Color x:Key="Background">#F1F1F1</Color>
     <Color x:Key="BackgrounDark">#182234</Color>
 
+    <Color x:Key="ErrorFontColor">#fF0000</Color>
+    <Color x:Key="DarkErrorFontColor">#Fd0000</Color>
     <Color x:Key="White">#EDEDED</Color>
     <Color x:Key="Black">#0D1B35</Color>
     <Color x:Key="Magenta">#D600AA</Color>

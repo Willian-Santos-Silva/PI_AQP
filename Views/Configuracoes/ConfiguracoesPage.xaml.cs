@@ -13,6 +13,7 @@ namespace PI_AQP.Views;
 
 public partial class ConfiguracoesPage : ContentPage, INotifyPropertyChanged
 {
+    public ICommand OnSaveChanges { get; set; }
     private Configuracao _configuracao;
     public Configuracao configuracao
     {
@@ -35,10 +36,11 @@ public partial class ConfiguracoesPage : ContentPage, INotifyPropertyChanged
 
     const string SERVICE_UUID = "02be3f08-b74b-4038-aaa4-5020d1582eba";
     const string CHARACTERISTIC_CONFIGURATION_UUID = "b371220d-3559-410d-8a47-78b06df6eb3a";
-    const string CHARACTERISTIC_RTC_UUID = "b371220d-3559-410d-8a47-78b06df6eb3a";
+    const string CHARACTERISTIC_RTC_UUID = "a5939a1a-0b50-48d0-8d03-fad87790ab4a";
 
     public ConfiguracoesPage()
     {
+        OnSaveChanges = new Command<InputNumberView>(SaveChange);
         configuracao = new();
         BindingContext = this;
 
@@ -70,7 +72,8 @@ public partial class ConfiguracoesPage : ContentPage, INotifyPropertyChanged
     {
         try
         {
-            _configuracao.rtc = new DateTimeOffset(_configuracao.dataRTC).ToUnixTimeSeconds();
+            _configuracao.rtc = new DateTimeOffset(_configuracao.dataRTC.AddTicks(_configuracao.timeRTC.Ticks)).ToUnixTimeSeconds();
+
             await _rtcCaracteristica.SendMessage(JsonSerializer.Serialize(new { rtc = _configuracao.rtc }));
         }
         catch (Exception ex)
@@ -96,6 +99,20 @@ public partial class ConfiguracoesPage : ContentPage, INotifyPropertyChanged
         {
             Debug.WriteLine(e.Message, "erro config");
         }
+    }
+    public async void SaveChange(InputNumberView e)
+    {
+        await MainThread.InvokeOnMainThreadAsync(async () =>
+        { 
+            try
+            {
+                await _configuracaoCaracteristica.SendMessage(JsonSerializer.Serialize<ConfiguracoesDTO>(_configuracao.ToDTO()));
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message, "save");
+            }
+        });
     }
 
     public async void SaveRTC(InputNumberView e)

@@ -33,14 +33,12 @@
                 </StackLayout>
             </Grid>
 
-
-
             <Label Text="ATUALIZAR ROTINA"
                     FontSize="18"
                     FontFamily="InterBold"
                     HorizontalOptions="Center"
-                    TextColor="{StaticResource Primary}"
-                    Margin="0, 32, 0, 24"/>
+                    TextColor="{StaticResource PrimaryDark}"
+                    Margin="0, 64, 0, 0"/>
 
 
             <StackLayout Margin="32,0,32,0" VerticalOptions="StartAndExpand">
@@ -49,8 +47,7 @@
                     FontFamily="InterBold"
                     Margin="0, 0, 0, 8"/>
                 
-                <FlexLayout Direction="Row" >
-
+                <StackLayout>
                     <CollectionView ItemsSource="{Binding listWeekdays}">
 
                         <CollectionView.ItemsLayout>
@@ -102,7 +99,11 @@
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>
-                </FlexLayout>
+
+                    <StackLayout Margin="0,8" IsVisible="{ Binding WeekdaysIsValid, Mode=TwoWay}">
+                        <Label Text="Selecione um dia da semana" TextColor="{StaticResource ErrorFontColor}"></Label>
+                    </StackLayout>
+                </StackLayout>
 
                 <StackLayout Margin="0,32,0,0" VerticalOptions="StartAndExpand">
                     <StackLayout>
@@ -137,12 +138,10 @@
                             <StackLayout VerticalOptions="Center">
                                 <Frame BackgroundColor="#D2D2D2"
                                        CornerRadius="6">
-                                    <Entry Text="{Binding Intervalo}"
+                                    <Entry Text="{Binding Intervalo, Mode=TwoWay}"
                                            Keyboard="Numeric"
                                            x:Name="intervalo"
-                                           WidthRequest="40"
-                                           HeightRequest="32"
-                                           />
+                                           WidthRequest="40" />
                                 </Frame>
                             </StackLayout>
                             <Label Text="min" VerticalOptions="Center" />
@@ -248,9 +247,45 @@
             </StackLayout>
         </DataTemplate>
 
+        <DataTemplate x:Key="Invalid">
+            <StackLayout>
+                <StackLayout Orientation="Horizontal" Spacing="16">
+                    <StackLayout HorizontalOptions="FillAndExpand">
+                        <Label Text="Inicio" Style="{StaticResource SubLabelForm}"></Label>
+                        <Frame MaximumWidthRequest="164" BackgroundColor="#D2D2D2">
+                            <TimePicker HorizontalOptions="FillAndExpand" TextColor="{StaticResource ErrorFontColor}" Time="{Binding StartTime}" Format="HH:mm" IsEnabled="True" />
+                        </Frame>
+                    </StackLayout>
+                    <StackLayout HorizontalOptions="FillAndExpand">
+                        <Label Text="Fim" Style="{StaticResource SubLabelForm}"></Label>
+                        <Frame MaximumWidthRequest="164" BackgroundColor="#D2D2D2">
+                            <TimePicker HorizontalOptions="FillAndExpand" TextColor="{StaticResource ErrorFontColor}" Time="{Binding EndTime}" Format="HH:mm" IsEnabled="True"/>
+                        </Frame>
+                    </StackLayout>
+                    <StackLayout VerticalOptions="Center">
+                        <Button Text="-"
+                                FontAttributes="Bold"
+                                CornerRadius="100"
+                                BackgroundColor="#3414B6" 
+                                WidthRequest="25"
+                                HeightRequest="25"
+                                HorizontalOptions="CenterAndExpand"
+                                Command="{Binding BindingContext.BtRemover_Clicked, Source={RelativeSource AncestorType={x:Type CollectionView}}}"
+                                CommandParameter="{Binding .}"
+                                Padding="1"/>
+                    </StackLayout>
+                </StackLayout>
+
+                <StackLayout Margin="0,8">
+                    <Label Text="Intervalo de horarios inválidos" TextColor="{StaticResource ErrorFontColor}"></Label>
+                </StackLayout>
+            </StackLayout>
+        </DataTemplate>
+
         <template:ListTimeWaterPumpTemplate x:Key="CreateIrrigationRoutinesViewModel"
                                     CanDelete="{StaticResource CanDelete}"
                                     CanEditing="{StaticResource CanEditing}"
-                                    Default="{StaticResource Default}"/>
+                                    Default="{StaticResource Default}"
+                                    Invalid="{StaticResource Invalid}"/>
     </ContentPage.Resources>
 </ContentPage>

@@ -144,6 +144,7 @@ namespace PI_AQP.Services
             }
             catch (Exception ex)
             {
+                Debug.WriteLine(ex.Message, "start");
             }
         }
 
@@ -154,9 +155,12 @@ namespace PI_AQP.Services
             while (offset < dataSize)
             {
                 int chuncksize = Math.Min(60, dataSize - offset);
+                Debug.WriteLine(data.Substring(offset, chuncksize));
                 await _characteristic.WriteAsync(Encoding.ASCII.GetBytes(data.Substring(offset, chuncksize)));
                 offset += chuncksize;
             }
+
+            Debug.WriteLine("fim");
             await _characteristic.WriteAsync([0xFF]);
         }
 
@@ -189,12 +193,17 @@ namespace PI_AQP.Services
         }
 
 
-        public Task OnStartUpdate()
+        public async Task OnStartUpdate()
         {
             dataBuffer.Clear();
+
+            if (!_characteristic.CanUpdate)
+            {
+                return;
+            }
+
             _characteristic.ValueUpdated += EventCallback;
-            //if(_characteristic.CanUpdate)
-                return _characteristic.StartUpdatesAsync();
+            await _characteristic.StartUpdatesAsync();
         }
         public async Task OnPauseUpdate()
         {

@@ -130,7 +130,7 @@
                             </StackLayout>
 
                             <Frame.GestureRecognizers>
-                                <!--<TapGestureRecognizer Tapped="SalvarDataEHora"/>-->
+                                <TapGestureRecognizer Command="{Binding OnSaveChanges, Mode=TwoWay}"/>
                             </Frame.GestureRecognizers>
                         </Frame>
                     </StackLayout>
@@ -154,7 +154,7 @@
 
                             <Frame MaximumWidthRequest="256" BackgroundColor="Transparent">
                                 <TimePicker HorizontalOptions="FillAndExpand"
-                                            Time="{Binding configuracao.dataRTC, Mode=TwoWay}"
+                                            Time="{Binding configuracao.timeRTC, Mode=TwoWay}"
                                             IsEnabled="True"
                                             FontSize="16"
                                             FontFamily="InterBold"
