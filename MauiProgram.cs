@@ -30,11 +30,12 @@ namespace PI_AQP
                 });
             //.UseSkiaSharp();
 
+            StylingEntry();
+
             builder.Services.AddSingleton<IDevicesConnectionService, BluetoothClientService>();
 #if DEBUG
             builder.Logging.AddDebug();
 #endif
-
             return builder.Build();
         }
         private static void StylingEntry()

@@ -1,8 +1,10 @@
 ﻿using Aquaponia.Domain.Entities;
+using CommunityToolkit.Maui.Views;
 using PI_AQP.Models;
 using PI_AQP.Services;
 using PI_AQP.ViewModels;
 using PI_AQP.Views;
+using PI_AQP.Views.General;
 using PI_AQP.Views.Historico;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -68,56 +70,36 @@ namespace PI_AQP
 
             listRotinas = RotinasViewModel.listRotinas;
             rotinasListView.ItemsSource = listRotinas;
-
-            t = StartServices();
         }
 
-        private Task StartServices()
+        private async Task StartServices()
         {
-            return Task.Run(async () =>
-            {
-                await RotinasViewModel.StartService();
+            await RotinasViewModel.StartService();
 
-                await _systemInfoCaracteristica.StartService();
-                await _systemInfoCaracteristica.OnStartUpdate();
+            await _systemInfoCaracteristica.StartService();
+            await _systemInfoCaracteristica.OnStartUpdate();
 
-                await _pumpCaracteristica.StartService();
-                await _pumpCaracteristica.OnStartUpdate();
-                tComplete.SetResult(true);
-            });
+            await _pumpCaracteristica.StartService();
+            await _pumpCaracteristica.OnStartUpdate();
         }
 
         protected override async void OnAppearing()
         {
             try
             {
-                if (await tComplete.Task)
-                {
-                    await RotinasViewModel.Reload();
-                    //await _pumpCaracteristica.Request();
-                }
+                var loading = new PopupLoadingSpinner();
+                this.ShowPopup(loading);
+
+                await StartServices();
+                await RotinasViewModel.Reload();
+
+                await loading.CloseAsync();
             }
             catch (Exception e)
             {
                 Debug.WriteLine(e.Message, "erro config");
             }
         }
-
-        //protected override async void OnDisappearing()
-        //{
-        //    try
-        //    {
-        //        if (await tComplete.Task)
-        //        {
-        //            await RotinasViewModel.Reload();
-        //            //await _pumpCaracteristica.Request();
-        //        }
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        Debug.WriteLine(e.Message, "erro config");
-        //    }
-        //}
 
         private async void Temperature_Clicked(object sender, TappedEventArgs args)
         {

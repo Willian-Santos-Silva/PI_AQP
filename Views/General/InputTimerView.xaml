@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PI_AQP.Views.InputTimerView"
+             Style="{StaticResource DefaultPage}">
+    <ContentView.Resources>
+        <ControlTemplate  x:Key="inputNumber">
+            <HorizontalStackLayout Spacing="8">
+                <Frame Style="{StaticResource InputNumeric}">
+                    <HorizontalStackLayout VerticalOptions="FillAndExpand" Spacing="2">
+                        <Label Text="{TemplateBinding Value, StringFormat=\{0:hh\\:mm\}}"
+                               FontSize="16"
+                               FontFamily="InterBold"
+                               VerticalTextAlignment="Center"></Label>
+                    </HorizontalStackLayout>
+                </Frame>
+
+                <StackLayout Orientation="Horizontal">
+                    <Frame Background="Transparent"
+                           Padding="8"
+                           HeightRequest="32"
+                           WidthRequest="32">
+                        <StackLayout>
+                            <Label Text="edit" 
+                                   FontFamily="GoogleMaterialIcons"
+                                   FontSize="16"/>
+                        </StackLayout>
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnEnableEditing"/>
+                        </Frame.GestureRecognizers>
+                    </Frame>
+                </StackLayout>
+            </HorizontalStackLayout>
+        </ControlTemplate>
+
+        <ControlTemplate  x:Key="inputNumberEdit">
+            <HorizontalStackLayout VerticalOptions="FillAndExpand"
+                                   Spacing="8">
+
+                <HorizontalStackLayout VerticalOptions="FillAndExpand" Spacing="2">
+                    <TimePicker Time="{TemplateBinding Value, Mode=TwoWay}"
+                                Background="Transparent"
+                                FontSize="16"
+                                FontFamily="InterBold"
+                                TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"/>
+                </HorizontalStackLayout>
+
+                <HorizontalStackLayout Spacing="8">
+                    <StackLayout Orientation="Horizontal" >
+                        <Frame Background="Transparent"
+                               Padding="8"
+                               CornerRadius="100"
+                               HeightRequest="32"
+                               WidthRequest="32">
+                            <StackLayout>
+                                <Label Text="check" 
+                                   FontFamily="GoogleMaterialIcons"
+                                   FontSize="16" />
+                            </StackLayout>
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnCommandSave"/>
+                                <TapGestureRecognizer Command="{TemplateBinding CommandSave}"/>
+                            </Frame.GestureRecognizers>
+                        </Frame>
+                    </StackLayout>
+                    
+                    <Button Text="close"
+                            TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+                            FontFamily="GoogleMaterialIcons"
+                            FontSize="16"
+                            Padding="8"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                            BackgroundColor="Transparent" 
+                            Clicked="DisableEditing"
+                            />
+                </HorizontalStackLayout>
+            </HorizontalStackLayout>
+        </ControlTemplate>
+    </ContentView.Resources>
+</ContentView>

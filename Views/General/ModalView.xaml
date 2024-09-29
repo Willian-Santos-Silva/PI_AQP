@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+               xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+                 x:Class="PI_AQP.Views.General.ModalView">
+    <VerticalStackLayout>
+        <Frame CornerRadius="8" BackgroundColor="BlanchedAlmond">
+            <StackLayout>
+                <Label 
+                    Text="Welcome to .NET MAUI!"
+                    VerticalOptions="Center" 
+                    HorizontalOptions="Center" />
+                
+                <Button Text="Salvar"></Button>
+            </StackLayout>
+        </Frame>
+    </VerticalStackLayout>
+</toolkit:Popup>

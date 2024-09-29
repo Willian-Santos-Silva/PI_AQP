@@ -145,6 +145,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="Views\General\InputTimerView.xaml.cs">
+	    <DependentUpon>InputTimerView.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Views\Historico\HistoryPhPage.xaml.cs">
 	    <DependentUpon>HistoryPhPage.xaml</DependentUpon>
 	  </Compile>
@@ -172,7 +175,16 @@
 	  <MauiXaml Update="Views\General\CustomInputTimeView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\General\InputTimerView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\General\InputNumberView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\General\ModalView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\General\PopupLoadingSpinner.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\Historico\HistoryPhPage.xaml">

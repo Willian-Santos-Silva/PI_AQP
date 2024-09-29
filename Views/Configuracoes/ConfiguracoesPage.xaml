@@ -116,23 +116,48 @@
                                  Orientation="Horizontal">
                         <StackLayout Spacing="8"
                                      Orientation="Horizontal">
-                            <Frame MaximumWidthRequest="164" BackgroundColor="Transparent">
+
+                            <!--<Label Text="{Binding configuracao.tempo_reaplicacao, Mode=TwoWay, StringFormat='HH:mm'}"
+                                   FontFamily="InterBold"
+                                   VerticalOptions="Center"
+                                   TextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource PrimaryDarkText}}"></Label>-->
+                            <!--<Frame MaximumWidthRequest="164" BackgroundColor="Transparent">
                                 <TimePicker HorizontalOptions="FillAndExpand"
                                             Time="{Binding configuracao.tempo_reaplicacao, Mode=TwoWay}"
                                             IsEnabled="True"
                                             FontSize="16"
                                             FontFamily="InterBold"
                                             TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"/>
-                            </Frame>
+                            </Frame>-->
+                            <views:InputTimerView  x:Name="TempoReaplicacao"
+                                                   Value="{Binding configuracao.tempo_reaplicacao, Mode=TwoWay}"
+                                                   IsEditing="False"
+                                                   CommandSave="{Binding OnSaveChanges, Mode=TwoWay}"/>
                         </StackLayout>
 
+                        
+                            <!--<StackLayout Orientation="Horizontal">
+                            <Frame Background="Transparent"
+                                   Padding="8"
+                                   HeightRequest="32"
+                                   WidthRequest="32">
+                                <StackLayout>
+                                    <Label Text="edit" 
+                                           FontFamily="GoogleMaterialIcons"
+                                           FontSize="16"/>
+                                </StackLayout>
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="DisplayPopup"/>
+                                </Frame.GestureRecognizers>
+                            </Frame>
+                        </StackLayout>-->
 
-                        <Frame Padding="16,8" BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryDark}, Dark={StaticResource SecondaryDark}}">
+                        <!--<Frame Padding="16,8" BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryDark}, Dark={StaticResource SecondaryDark}}">
                             <StackLayout Orientation="Horizontal" Spacing="8">
-                                <!--<Label Text="refresh"
+                                --><!--<Label Text="refresh"
                                        FontFamily="GoogleMaterialIcons"
                                        VerticalOptions="Center"
-                                       TextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource PrimaryDarkText}}"></Label>-->
+                                       TextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource PrimaryDarkText}}"></Label>--><!--
 
                                 <Label Text="Atualizar"
                                        FontFamily="InterBold"
@@ -141,9 +166,9 @@
                             </StackLayout>
 
                             <Frame.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding OnSaveChanges, Mode=TwoWay}"/>
+                                <TapGestureRecognizer Tapped="DisplayPopup"/>
                             </Frame.GestureRecognizers>
-                        </Frame>
+                        </Frame>-->
                     </StackLayout>
                 </StackLayout>
 

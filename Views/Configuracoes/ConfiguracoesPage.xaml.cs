@@ -1,8 +1,10 @@
 using Aquaponia.Domain.Entities;
 using Aquaponia.DTO.Entities;
+using CommunityToolkit.Maui.Views;
 using PI_AQP.Mapper;
 using PI_AQP.Models;
 using PI_AQP.Services;
+using PI_AQP.Views.General;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Text;
@@ -51,22 +53,50 @@ public partial class ConfiguracoesPage : ContentPage, INotifyPropertyChanged
         _rtcCaracteristica = new BluetoothCaracteristica(_device.id, SERVICE_UUID, CHARACTERISTIC_RTC_UUID);
 
         InitializeComponent();
+    }
+    private async Task StartServices()
+    {
+        await _configuracaoCaracteristica.StartService();
+        await _configuracaoCaracteristica.OnStartUpdate();
+        await _configuracaoCaracteristica.Request();
 
-        Task.Run(async () =>
+        await _rtcCaracteristica.StartService();
+    }
+
+    protected override async void OnAppearing()
+    {
+        try
         {
-            try
-            {
-                await _configuracaoCaracteristica.StartService();
-                await _configuracaoCaracteristica.OnStartUpdate();
-                await _configuracaoCaracteristica.Request();
+            var loading = new PopupLoadingSpinner();
+            this.ShowPopup(loading);
 
-                await _rtcCaracteristica.StartService();
-            }
-            catch (Exception e)
+            await StartServices();
+
+            await loading.CloseAsync();
+        }
+        catch (Exception e)
+        {
+            Debug.WriteLine(e.Message, "erro config");
+        }
+    }
+
+    public async void DisplayPopup(object sender, TappedEventArgs args)
+    {
+        var popup = new ModalView();
+
+        var result = await this.ShowPopupAsync(popup, CancellationToken.None);
+
+        if (result is bool boolResult)
+        {
+            if (boolResult)
             {
-                Debug.WriteLine(e.Message);
+                // Yes was tapped
             }
-        });
+            else
+            {
+                // No was tapped
+            }
+        }
     }
     private async void AtualizarTempoReaplicacao(object sender, TappedEventArgs args)
     {
