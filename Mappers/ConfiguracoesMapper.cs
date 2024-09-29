@@ -15,8 +15,7 @@ namespace PI_AQP.Mapper
                 max_ph = configuracoes.max_ph,
                 dosagem_solucao_acida = configuracoes.dosagem_solucao_acida,
                 dosagem_solucao_base = configuracoes.dosagem_solucao_base,
-                rtc = configuracoes.rtc,
-                dataRTC = DateTimeOffset.FromUnixTimeSeconds(configuracoes.rtc).Date.ToLocalTime(),
+                dataRTC = DateTimeOffset.FromUnixTimeSeconds(configuracoes.rtc).DateTime.ToLocalTime(),
                 timeRTC = DateTimeOffset.FromUnixTimeSeconds(configuracoes.rtc).DateTime.ToLocalTime().TimeOfDay,
                 tempo_reaplicacao = TimeSpan.FromSeconds(configuracoes.tempo_reaplicacao),
                 //tempo_reaplicacao = DateTimeOffset.FromUnixTimeSeconds(configuracoes.tempo_reaplicacao).DateTime.ToLocalTime().TimeOfDay,
@@ -33,7 +32,7 @@ namespace PI_AQP.Mapper
                 dosagem_solucao_acida = configuracoes.dosagem_solucao_acida,
                 dosagem_solucao_base = configuracoes.dosagem_solucao_base,
                 tempo_reaplicacao = (long)configuracoes.tempo_reaplicacao.TotalSeconds,
-                rtc = configuracoes.rtc
+                rtc = new DateTimeOffset(new DateTime(DateOnly.FromDateTime(configuracoes.dataRTC.Date), TimeOnly.FromTimeSpan(configuracoes.timeRTC)).ToUniversalTime()).ToUnixTimeSeconds()
             };
         }
     }

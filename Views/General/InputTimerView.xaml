@@ -38,7 +38,7 @@
                                    Spacing="8">
 
                 <HorizontalStackLayout VerticalOptions="FillAndExpand" Spacing="2">
-                    <TimePicker Time="{TemplateBinding Value, Mode=TwoWay}"
+                    <TimePicker x:Name="CustomTimePicker" Time="{TemplateBinding Value, Mode=TwoWay}"
                                 Background="Transparent"
                                 FontSize="16"
                                 FontFamily="InterBold"

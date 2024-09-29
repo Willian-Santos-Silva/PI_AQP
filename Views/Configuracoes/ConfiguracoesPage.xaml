@@ -111,65 +111,10 @@
 
                 <StackLayout>
                     <Label Text="Tempo para reaplicar a solução" Style="{StaticResource LabelForm}"></Label>
-
-                    <StackLayout Spacing="16"
-                                 Orientation="Horizontal">
-                        <StackLayout Spacing="8"
-                                     Orientation="Horizontal">
-
-                            <!--<Label Text="{Binding configuracao.tempo_reaplicacao, Mode=TwoWay, StringFormat='HH:mm'}"
-                                   FontFamily="InterBold"
-                                   VerticalOptions="Center"
-                                   TextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource PrimaryDarkText}}"></Label>-->
-                            <!--<Frame MaximumWidthRequest="164" BackgroundColor="Transparent">
-                                <TimePicker HorizontalOptions="FillAndExpand"
-                                            Time="{Binding configuracao.tempo_reaplicacao, Mode=TwoWay}"
-                                            IsEnabled="True"
-                                            FontSize="16"
-                                            FontFamily="InterBold"
-                                            TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"/>
-                            </Frame>-->
-                            <views:InputTimerView  x:Name="TempoReaplicacao"
-                                                   Value="{Binding configuracao.tempo_reaplicacao, Mode=TwoWay}"
-                                                   IsEditing="False"
-                                                   CommandSave="{Binding OnSaveChanges, Mode=TwoWay}"/>
-                        </StackLayout>
-
-                        
-                            <!--<StackLayout Orientation="Horizontal">
-                            <Frame Background="Transparent"
-                                   Padding="8"
-                                   HeightRequest="32"
-                                   WidthRequest="32">
-                                <StackLayout>
-                                    <Label Text="edit" 
-                                           FontFamily="GoogleMaterialIcons"
-                                           FontSize="16"/>
-                                </StackLayout>
-                                <Frame.GestureRecognizers>
-                                    <TapGestureRecognizer Tapped="DisplayPopup"/>
-                                </Frame.GestureRecognizers>
-                            </Frame>
-                        </StackLayout>-->
-
-                        <!--<Frame Padding="16,8" BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryDark}, Dark={StaticResource SecondaryDark}}">
-                            <StackLayout Orientation="Horizontal" Spacing="8">
-                                --><!--<Label Text="refresh"
-                                       FontFamily="GoogleMaterialIcons"
-                                       VerticalOptions="Center"
-                                       TextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource PrimaryDarkText}}"></Label>--><!--
-
-                                <Label Text="Atualizar"
-                                       FontFamily="InterBold"
-                                       VerticalOptions="Center"
-                                       TextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource PrimaryDarkText}}"></Label>
-                            </StackLayout>
-
-                            <Frame.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="DisplayPopup"/>
-                            </Frame.GestureRecognizers>
-                        </Frame>-->
-                    </StackLayout>
+                    <views:InputTimerView  x:Name="TempoReaplicacao"
+                                            Value="{Binding configuracao.tempo_reaplicacao, Mode=TwoWay}"
+                                            IsEditing="False"
+                                            CommandSave="{Binding OnSaveChanges, Mode=TwoWay}"/>
                 </StackLayout>
 
                 <StackLayout>
@@ -177,43 +122,37 @@
 
                     <StackLayout Spacing="16"
                                  Orientation="Horizontal">
-                        <StackLayout Spacing="8"
-                                 Orientation="Horizontal">
-                            <Frame MaximumWidthRequest="256" BackgroundColor="Transparent">
-                                <DatePicker HorizontalOptions="FillAndExpand"
-                                            Date="{Binding configuracao.dataRTC, Mode=TwoWay}"
-                                            IsEnabled="True"
-                                            FontSize="16"
-                                            FontFamily="InterBold"
-                                            TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"/>
-                            </Frame>
+                        <Frame MaximumWidthRequest="256" BackgroundColor="Transparent"
+                                 VerticalOptions="Center">
+                            <Label FontSize="16"
+                                    FontFamily="InterBold"
+                                    TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}">
 
-                            <Frame MaximumWidthRequest="256" BackgroundColor="Transparent">
-                                <TimePicker HorizontalOptions="FillAndExpand"
-                                            Time="{Binding configuracao.timeRTC, Mode=TwoWay}"
-                                            IsEnabled="True"
-                                            FontSize="16"
-                                            FontFamily="InterBold"
-                                            TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"/>
-                            </Frame>
-                        </StackLayout>
+                                <Label.Text>
+                                    <MultiBinding StringFormat='{}{0:dd/MM/yyyy} {0:HH:mm:ss G\MTzz}'>
+                                        <Binding Path="configuracao.dataRTC"/>
+                                        <Binding Path="configuracao.timeRTC"/>
+                                    </MultiBinding>
+                                </Label.Text>
+                            </Label>
+                        </Frame>
 
 
                         <Frame Padding="16,8" BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryDark}, Dark={StaticResource SecondaryDark}}">
                             <StackLayout Orientation="Horizontal" Spacing="8">
-                                <Label Text="refresh"
+                                <Label Text="schedule"
                                        FontFamily="GoogleMaterialIcons"
                                        VerticalOptions="Center"
                                        TextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource PrimaryDarkText}}"></Label>
 
-                                <Label Text="Atualizar"
+                                <Label Text="Alterar"
                                        FontFamily="InterBold"
                                        VerticalOptions="Center"
                                        TextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource PrimaryDarkText}}"></Label>
                             </StackLayout>
 
                             <Frame.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="SalvarDataEHora"/>
+                                <TapGestureRecognizer Tapped="OnOpenModalUpdateRTC"/>
                             </Frame.GestureRecognizers>
                         </Frame>
                     </StackLayout>

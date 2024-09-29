@@ -1,17 +1,64 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-                xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-                 x:Class="PI_AQP.Views.General.ModalView">
-    <VerticalStackLayout>
-        <Frame CornerRadius="8" BackgroundColor="BlanchedAlmond">
+               x:Class="PI_AQP.Views.ModalView"
+               Color="Transparent">
+    <VerticalStackLayout BackgroundColor="Transparent">
+        <Frame CornerRadius="8"
+               BackgroundColor="{AppThemeBinding Light={StaticResource Background}, Dark={StaticResource BackgrounDark}}"
+               Padding="32,32">
             <StackLayout>
-                <Label 
-                    Text="Welcome to .NET MAUI!"
-                    VerticalOptions="Center" 
-                    HorizontalOptions="Center" />
-                
-                <Button Text="Salvar"></Button>
+
+                <StackLayout>
+                    <Label Text="Data e Hora" Style="{StaticResource LabelForm}"></Label>
+
+                    <StackLayout Spacing="16"
+                                     Orientation="Horizontal">
+                        <StackLayout Spacing="8"
+                                         Orientation="Horizontal">
+                            <Frame Padding="0" BackgroundColor="{StaticResource Gray200}">
+                                <DatePicker HorizontalOptions="FillAndExpand"
+                                                Date="{Binding configuracao.dataRTC, Mode=TwoWay}"
+                                                IsEnabled="True"
+                                                FontSize="16"
+                                                FontFamily="InterBold"
+                                                TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"/>
+                            </Frame>
+
+                            <Frame BackgroundColor="{StaticResource Gray200}">
+                                <TimePicker HorizontalOptions="FillAndExpand"
+                                                Time="{Binding configuracao.timeRTC, Mode=TwoWay}"
+                                                IsEnabled="True"
+                                                FontSize="16"
+                                                FontFamily="InterBold"
+                                                TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"/>
+                            </Frame>
+                        </StackLayout>
+                    </StackLayout>
+                </StackLayout>
+
+
+                <Frame Padding="16,8"
+                       Margin="0,24,0,0"
+                       BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryDark}, Dark={StaticResource SecondaryDark}}">
+                    <StackLayout Orientation="Horizontal" Spacing="8"
+                                 HorizontalOptions="Center">
+                        <Label Text="schedule"
+                                       FontFamily="GoogleMaterialIcons"
+                                       VerticalOptions="Center"
+                                       TextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource PrimaryDarkText}}"></Label>
+
+                        <Label Text="Atualizar"
+                                     FontFamily="InterBold"
+                                     VerticalOptions="Center"
+                                     TextColor="{AppThemeBinding Light={StaticResource PrimaryDarkText}, Dark={StaticResource PrimaryDarkText}}"></Label>
+                    </StackLayout>
+
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnConfirmResult"/>
+                    </Frame.GestureRecognizers>
+                </Frame>
             </StackLayout>
         </Frame>
     </VerticalStackLayout>

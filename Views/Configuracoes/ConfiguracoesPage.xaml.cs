@@ -7,6 +7,7 @@ using PI_AQP.Services;
 using PI_AQP.Views.General;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 using System.Windows.Input;
@@ -65,9 +66,9 @@ public partial class ConfiguracoesPage : ContentPage, INotifyPropertyChanged
 
     protected override async void OnAppearing()
     {
+        var loading = new PopupLoadingSpinner();
         try
         {
-            var loading = new PopupLoadingSpinner();
             this.ShowPopup(loading);
 
             await StartServices();
@@ -77,10 +78,11 @@ public partial class ConfiguracoesPage : ContentPage, INotifyPropertyChanged
         catch (Exception e)
         {
             Debug.WriteLine(e.Message, "erro config");
+            await loading.CloseAsync();
         }
     }
 
-    public async void DisplayPopup(object sender, TappedEventArgs args)
+    public async void OnOpenModalUpdateRTC(object sender, TappedEventArgs args)
     {
         var popup = new ModalView();
 
@@ -90,41 +92,24 @@ public partial class ConfiguracoesPage : ContentPage, INotifyPropertyChanged
         {
             if (boolResult)
             {
-                // Yes was tapped
-            }
-            else
-            {
-                // No was tapped
+                await SalvarDataEHora();
             }
         }
     }
-    private async void AtualizarTempoReaplicacao(object sender, TappedEventArgs args)
+    private async Task SalvarDataEHora()
     {
-        string result = await DisplayPromptAsync("Question 2", "What's 5 + 5?", initialValue: "10", maxLength: 2, keyboard: Keyboard.Numeric);
         try
         {
-            _configuracao.rtc = new DateTimeOffset(_configuracao.dataRTC.AddTicks(_configuracao.timeRTC.Ticks)).ToUnixTimeSeconds();
+            ConfiguracoesDTO  dto = _configuracao.ToDTO();
 
-            await _rtcCaracteristica.SendMessage(JsonSerializer.Serialize(new { rtc = _configuracao.rtc }));
+            await _rtcCaracteristica.SendMessage(JsonSerializer.Serialize(new { rtc = dto.rtc }));
         }
         catch (Exception ex)
         {
             Debug.WriteLine(ex.Message, "save");
         }
     }
-    private async void SalvarDataEHora(object sender, TappedEventArgs args)
-    {
-        try
-        {
-            _configuracao.rtc = new DateTimeOffset(_configuracao.dataRTC.AddTicks(_configuracao.timeRTC.Ticks)).ToUnixTimeSeconds();
 
-            await _rtcCaracteristica.SendMessage(JsonSerializer.Serialize(new { rtc = _configuracao.rtc }));
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine(ex.Message, "save");
-        }
-    }
     private void GetConfiguration(CharacteristicBluetoothDTO ble)
     {
         try
@@ -133,7 +118,6 @@ public partial class ConfiguracoesPage : ContentPage, INotifyPropertyChanged
 
 
             ConfiguracoesDTO? dto = JsonSerializer.Deserialize<ConfiguracoesDTO>(response) ?? new ConfiguracoesDTO();
-            //dto.rtc = DateTimeOffset.Now.ToUnixTimeSeconds();
             MainThread.InvokeOnMainThreadAsync(() =>
             {
                 configuracao = dto.ToModel();
@@ -144,6 +128,7 @@ public partial class ConfiguracoesPage : ContentPage, INotifyPropertyChanged
             Debug.WriteLine(e.Message, "erro config");
         }
     }
+
     public async void SaveChange(InputNumberView e)
     {
         await MainThread.InvokeOnMainThreadAsync(async () =>
@@ -151,6 +136,7 @@ public partial class ConfiguracoesPage : ContentPage, INotifyPropertyChanged
             try
             {
                 await _configuracaoCaracteristica.SendMessage(JsonSerializer.Serialize<ConfiguracoesDTO>(_configuracao.ToDTO()));
+                await StartServices();
             }
             catch (Exception ex)
             {
@@ -159,17 +145,6 @@ public partial class ConfiguracoesPage : ContentPage, INotifyPropertyChanged
         });
     }
 
-    public async void SaveRTC(InputNumberView e)
-    {
-        try
-        {
-            await _configuracaoCaracteristica.SendMessage(JsonSerializer.Serialize(new { rtc = DateTimeOffset.Now.ToUnixTimeSeconds() }));
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine(ex.Message, "save");
-        }
-    }
     protected virtual void OnPropertyChanged(string propertyName)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
