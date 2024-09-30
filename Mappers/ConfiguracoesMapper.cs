@@ -32,7 +32,7 @@ namespace PI_AQP.Mapper
                 dosagem_solucao_acida = configuracoes.dosagem_solucao_acida,
                 dosagem_solucao_base = configuracoes.dosagem_solucao_base,
                 tempo_reaplicacao = (long)configuracoes.tempo_reaplicacao.TotalSeconds,
-                rtc = new DateTimeOffset(new DateTime(DateOnly.FromDateTime(configuracoes.dataRTC.Date), TimeOnly.FromTimeSpan(configuracoes.timeRTC)).ToUniversalTime()).ToUnixTimeSeconds()
+                rtc = new DateTimeOffset((configuracoes.dataRTC.Date + configuracoes.timeRTC).ToUniversalTime()).ToUnixTimeSeconds()
             };
         }
     }

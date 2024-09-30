@@ -22,8 +22,10 @@ namespace PI_AQP.Mapper
             foreach (TimingPumpModel horario in horarios)
             {
                 Periodo periodo = new Periodo();
-                periodo.start = Convert.ToInt16(horario.StartTime.TotalMinutes);
-                periodo.end = Convert.ToInt16(horario.EndTime.TotalMinutes);
+
+
+                periodo.start = Convert.ToInt16((DateTime.Today + horario.StartTime).ToUniversalTime().TimeOfDay.TotalMinutes);
+                periodo.end =   Convert.ToInt16((DateTime.Today + horario.EndTime).ToUniversalTime().TimeOfDay.TotalMinutes);
                 rotina.horarios.Add(periodo);
                 rotina.id = horario.IdRotinas;
             }
@@ -35,8 +37,10 @@ namespace PI_AQP.Mapper
             foreach (Periodo periodo in rotinas.horarios)
             {
                 TimingPumpModel horario = new TimingPumpModel();
-                horario.StartTime = TimeSpan.FromMinutes(periodo.start);
-                horario.EndTime = TimeSpan.FromMinutes(periodo.end);
+
+                horario.StartTime = DateTime.Today.AddMinutes(periodo.start + TimeZoneInfo.Local.BaseUtcOffset.TotalMinutes).TimeOfDay;
+                horario.EndTime = DateTime.Today.AddMinutes(periodo.end + TimeZoneInfo.Local.BaseUtcOffset.TotalMinutes).TimeOfDay;
+
                 horario.IdRotinas = rotinas.id;
                 horario.VisualState = TimingPumpModel.CAN_DELETE;
                 horarios.Add(horario);
@@ -101,8 +105,9 @@ namespace PI_AQP.Mapper
                     }
                 }
 
-                horario.StartNextHour = TimeSpan.FromMinutes(nextHour.start);
-                horario.EndNextHour = TimeSpan.FromMinutes(nextHour.end);
+
+                horario.StartNextHour = DateTime.Today.AddMinutes(nextHour.start + TimeZoneInfo.Local.BaseUtcOffset.TotalMinutes).TimeOfDay;
+                horario.EndNextHour = DateTime.Today.AddMinutes(nextHour.end + TimeZoneInfo.Local.BaseUtcOffset.TotalMinutes).TimeOfDay;
 
                 horario.nextHour = $"{horario.StartNextHour.ToFormattedString("HH:mm")} à {horario.EndNextHour.ToFormattedString("HH:mm")}";
                 horario.rotinaDTO = rotina;
