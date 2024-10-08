@@ -96,10 +96,9 @@ public partial class HistoryTemperaturePage : ContentPage, INotifyPropertyChange
             }
             catch (Exception e)
             {
-                Debug.WriteLine(e.Message, "rotinas list");
+                await DisplayAlert("Erro", e.Message, "Ok");
             }
         });
-
     }
 
     public void GetHistoryEndpoint(CharacteristicBluetoothDTO ble)
@@ -114,7 +113,6 @@ public partial class HistoryTemperaturePage : ContentPage, INotifyPropertyChange
             JsonElement j;
             if (root.TryGetProperty("history", out j))
                 historyList = JsonSerializer.Deserialize<List<HistoryTemperatureDTO>>(j) ?? new List<HistoryTemperatureDTO>();
-
 
 
             int min = root.GetProperty("min_temperatura").GetInt16();
@@ -132,7 +130,7 @@ public partial class HistoryTemperaturePage : ContentPage, INotifyPropertyChange
         }
         catch (Exception e)
         {
-            Debug.WriteLine(e.Message);
+            MainThread.InvokeOnMainThreadAsync(() => { DisplayAlert("Erro", e.Message, "Ok"); });
         }
     }
 

@@ -129,7 +129,7 @@
                                     TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}">
 
                                 <Label.Text>
-                                    <MultiBinding StringFormat='{}{0:dd/MM/yyyy} {0:HH:mm:ss G\MTzz}'>
+                                    <MultiBinding StringFormat='{}{0:dd/MM/yyyy} - {1:hh\:mm\:ss}'>
                                         <Binding Path="configuracao.dataRTC"/>
                                         <Binding Path="configuracao.timeRTC"/>
                                     </MultiBinding>

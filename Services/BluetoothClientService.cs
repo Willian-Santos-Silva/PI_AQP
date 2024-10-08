@@ -141,6 +141,13 @@ namespace PI_AQP.Services
 
                 var requestMtu = 512;
                 var responseMtu = await device.RequestMtuAsync(requestMtu);
+
+
+                if (_characteristic.CanUpdate)
+                {
+                    _characteristic.ValueUpdated += EventCallback;
+                }
+
             }
             catch (Exception ex)
             {
@@ -196,18 +203,10 @@ namespace PI_AQP.Services
         public async Task OnStartUpdate()
         {
             dataBuffer.Clear();
-
-            if (!_characteristic.CanUpdate)
-            {
-                return;
-            }
-
-            _characteristic.ValueUpdated += EventCallback;
             await _characteristic.StartUpdatesAsync();
         }
         public async Task OnPauseUpdate()
         {
-            _characteristic.ValueUpdated -= EventCallback;
             await _characteristic.StopUpdatesAsync();
             dataBuffer.Clear();
         }

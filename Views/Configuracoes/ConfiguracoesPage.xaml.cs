@@ -77,8 +77,8 @@ public partial class ConfiguracoesPage : ContentPage, INotifyPropertyChanged
         }
         catch (Exception e)
         {
-            Debug.WriteLine(e.Message, "erro config");
             await loading.CloseAsync();
+            await DisplayAlert("Erro", e.Message, "Ok");
         }
     }
 
@@ -96,6 +96,14 @@ public partial class ConfiguracoesPage : ContentPage, INotifyPropertyChanged
             }
         }
     }
+    private async void RestartPage()
+    {
+        var currentShell = Shell.Current;
+        var shell = new AppShell(); // Crie uma nova instância do Shell
+        Application.Current.MainPage = shell;
+        if (shell != null)
+            await shell.Navigation.PushAsync(new ConfiguracoesPage());
+    }
     private async Task SalvarDataEHora()
     {
         try
@@ -103,10 +111,11 @@ public partial class ConfiguracoesPage : ContentPage, INotifyPropertyChanged
             ConfiguracoesDTO  dto = _configuracao.ToDTO();
 
             await _rtcCaracteristica.SendMessage(JsonSerializer.Serialize(new { rtc = dto.rtc }));
+            await _configuracaoCaracteristica.Request();
         }
-        catch (Exception ex)
+        catch (Exception e)
         {
-            Debug.WriteLine(ex.Message, "save");
+            await DisplayAlert("Erro", e.Message, "Ok");
         }
     }
 
@@ -125,7 +134,7 @@ public partial class ConfiguracoesPage : ContentPage, INotifyPropertyChanged
         }
         catch (Exception e)
         {
-            Debug.WriteLine(e.Message, "erro config");
+            DisplayAlert("Erro", e.Message, "Ok");
         }
     }
 
@@ -138,9 +147,9 @@ public partial class ConfiguracoesPage : ContentPage, INotifyPropertyChanged
                 await _configuracaoCaracteristica.SendMessage(JsonSerializer.Serialize<ConfiguracoesDTO>(_configuracao.ToDTO()));
                 await StartServices();
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Debug.WriteLine(ex.Message, "save");
+                await DisplayAlert("Erro", e.Message, "Ok");
             }
         });
     }

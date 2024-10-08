@@ -10,6 +10,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 
@@ -72,22 +73,31 @@ namespace PI_AQP
             rotinasListView.ItemsSource = listRotinas;
         }
 
+        private async void RestartPage()
+        {
+            var currentShell = Shell.Current;
+            var shell = new AppShell(); // Crie uma nova instância do Shell
+            Application.Current.MainPage = shell;
+            if(shell != null)
+                await shell.Navigation.PushAsync(new MainPage());
+        }
+
+
         private async Task StartServices()
         {
             await RotinasViewModel.StartService();
-
             await _systemInfoCaracteristica.StartService();
-            await _systemInfoCaracteristica.OnStartUpdate();
-
             await _pumpCaracteristica.StartService();
+
+            await _systemInfoCaracteristica.OnStartUpdate();
             await _pumpCaracteristica.OnStartUpdate();
         }
 
         protected override async void OnAppearing()
         {
+            var loading = new PopupLoadingSpinner();
             try
             {
-                var loading = new PopupLoadingSpinner();
                 this.ShowPopup(loading);
 
                 await StartServices();
@@ -97,7 +107,10 @@ namespace PI_AQP
             }
             catch (Exception e)
             {
-                Debug.WriteLine(e.Message, "erro config");
+                await loading.CloseAsync();
+                bool a = await DisplayAlert("Erro", e.Message, "Recarregar", "Fechar");
+                if (a)
+                    RestartPage();
             }
         }
 
@@ -152,7 +165,7 @@ namespace PI_AQP
             }
             catch (Exception e)
             {
-                Debug.WriteLine(e.Message);
+                MainThread.InvokeOnMainThreadAsync (() => { DisplayAlert("Erro", e.Message, "Ok"); });
             }
         }
 
@@ -175,7 +188,7 @@ namespace PI_AQP
             }
             catch (Exception e)
             {
-                Debug.WriteLine(e.Message, "erro start");
+                MainThread.InvokeOnMainThreadAsync(() => { DisplayAlert("Erro", e.Message, "Ok"); });
             }
         }
 
@@ -210,7 +223,9 @@ namespace PI_AQP
             }
             catch (Exception e)
             {
-                Debug.WriteLine(e.Message);
+                bool a = await DisplayAlert("Erro", e.Message, "Recarregar", "Fechar");
+                if (a)
+                    RestartPage();
             }
         }
         public void ResetTimer()

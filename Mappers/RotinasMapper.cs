@@ -24,8 +24,8 @@ namespace PI_AQP.Mapper
                 Periodo periodo = new Periodo();
 
 
-                periodo.start = Convert.ToInt16((DateTime.Today + horario.StartTime).ToUniversalTime().TimeOfDay.TotalMinutes);
-                periodo.end =   Convert.ToInt16((DateTime.Today + horario.EndTime).ToUniversalTime().TimeOfDay.TotalMinutes);
+                periodo.start = Convert.ToInt16(horario.StartTime.TotalMinutes);
+                periodo.end =   Convert.ToInt16(horario.EndTime.TotalMinutes);
                 rotina.horarios.Add(periodo);
                 rotina.id = horario.IdRotinas;
             }
@@ -38,8 +38,8 @@ namespace PI_AQP.Mapper
             {
                 TimingPumpModel horario = new TimingPumpModel();
 
-                horario.StartTime = DateTime.Today.AddMinutes(periodo.start + TimeZoneInfo.Local.BaseUtcOffset.TotalMinutes).TimeOfDay;
-                horario.EndTime = DateTime.Today.AddMinutes(periodo.end + TimeZoneInfo.Local.BaseUtcOffset.TotalMinutes).TimeOfDay;
+                horario.StartTime = TimeSpan.FromMinutes(periodo.start);
+                horario.EndTime = TimeSpan.FromMinutes(periodo.end);
 
                 horario.IdRotinas = rotinas.id;
                 horario.VisualState = TimingPumpModel.CAN_DELETE;
@@ -106,8 +106,8 @@ namespace PI_AQP.Mapper
                 }
 
 
-                horario.StartNextHour = DateTime.Today.AddMinutes(nextHour.start + TimeZoneInfo.Local.BaseUtcOffset.TotalMinutes).TimeOfDay;
-                horario.EndNextHour = DateTime.Today.AddMinutes(nextHour.end + TimeZoneInfo.Local.BaseUtcOffset.TotalMinutes).TimeOfDay;
+                horario.StartNextHour = TimeSpan.FromMinutes(nextHour.start);
+                horario.EndNextHour = TimeSpan.FromMinutes(nextHour.end);
 
                 horario.nextHour = $"{horario.StartNextHour.ToFormattedString("HH:mm")} à {horario.EndNextHour.ToFormattedString("HH:mm")}";
                 horario.rotinaDTO = rotina;

@@ -101,7 +101,7 @@ public partial class HistoryPhPage : ContentPage, INotifyPropertyChanged
             }
             catch (Exception e)
             {
-                Debug.WriteLine(e.Message, "rotinas list");
+                await DisplayAlert("Erro", e.Message, "Ok");
             }
         });
 
@@ -135,7 +135,7 @@ public partial class HistoryPhPage : ContentPage, INotifyPropertyChanged
         }
         catch (Exception e)
         {
-            Debug.WriteLine(e.Message);
+            MainThread.InvokeOnMainThreadAsync(() => { DisplayAlert("Erro", e.Message, "Ok"); });
         }
     }
 

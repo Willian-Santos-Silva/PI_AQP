@@ -1,5 +1,7 @@
 ﻿using Aquaponia.DTO.Entities;
 using PI_AQP.Models;
+using System.Diagnostics;
+using System.Globalization;
 
 namespace PI_AQP.Mapper
 {
@@ -15,10 +17,9 @@ namespace PI_AQP.Mapper
                 max_ph = configuracoes.max_ph,
                 dosagem_solucao_acida = configuracoes.dosagem_solucao_acida,
                 dosagem_solucao_base = configuracoes.dosagem_solucao_base,
-                dataRTC = DateTimeOffset.FromUnixTimeSeconds(configuracoes.rtc).DateTime.ToLocalTime(),
-                timeRTC = DateTimeOffset.FromUnixTimeSeconds(configuracoes.rtc).DateTime.ToLocalTime().TimeOfDay,
+                dataRTC = DateTimeOffset.FromUnixTimeSeconds(configuracoes.rtc).UtcDateTime.Date,
+                timeRTC = DateTimeOffset.FromUnixTimeSeconds(configuracoes.rtc).UtcDateTime.TimeOfDay,
                 tempo_reaplicacao = TimeSpan.FromSeconds(configuracoes.tempo_reaplicacao),
-                //tempo_reaplicacao = DateTimeOffset.FromUnixTimeSeconds(configuracoes.tempo_reaplicacao).DateTime.ToLocalTime().TimeOfDay,
             };
         }
         public static ConfiguracoesDTO ToDTO(this Configuracao configuracoes)
@@ -32,7 +33,7 @@ namespace PI_AQP.Mapper
                 dosagem_solucao_acida = configuracoes.dosagem_solucao_acida,
                 dosagem_solucao_base = configuracoes.dosagem_solucao_base,
                 tempo_reaplicacao = (long)configuracoes.tempo_reaplicacao.TotalSeconds,
-                rtc = new DateTimeOffset((configuracoes.dataRTC.Date + configuracoes.timeRTC).ToUniversalTime()).ToUnixTimeSeconds()
+                rtc = ((DateTimeOffset)configuracoes.dataRTC.Add(configuracoes.timeRTC)).ToUnixTimeSeconds()
             };
         }
     }
