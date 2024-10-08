@@ -123,11 +123,12 @@ namespace PI_AQP.Services
         {
             try
             {
+                if (device?.State != DeviceState.Connected)
+                    device = await _adapter.ConnectToKnownDeviceAsync(_deviceId, new ConnectParameters());
                 if (_characteristic != null)
                 {
                     return;
                 }
-                device = await _adapter.ConnectToKnownDeviceAsync(_deviceId, new ConnectParameters());
 
                 _service = await device.GetServiceAsync(new Guid(_serviceUUID));
 

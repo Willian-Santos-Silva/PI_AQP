@@ -55,34 +55,6 @@ public partial class HistoryTemperaturePage : ContentPage, INotifyPropertyChange
         historyList = new List<HistoryTemperatureDTO>();
 
 
-        entries.Add(new(0)
-        {
-            Label = DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-            Color = SKColor.Parse("#fff"),
-            ValueLabel = "",
-            ValueLabelColor = SKColor.Parse("#fff"),
-        });
-
-
-        HistoryChart = new LineChart
-        {
-            Entries = entries,
-            ValueLabelOption = ValueLabelOption.TopOfElement,
-            ValueLabelTextSize = 24,
-            ValueLabelOrientation = Orientation.Horizontal,
-
-            BackgroundColor = SKColor.FromHsl(0, 0, 0, 0),
-            ShowYAxisLines = true,
-            ShowYAxisText = true,
-            YAxisPosition = Position.Left,
-            YAxisTextPaint = new SKPaint() { Color = SKColor.Parse("#fff"), TextSize = 24 },
-            YAxisLinesPaint = new SKPaint() { Color = SKColor.Parse("#153D8C") },
-            LabelOrientation = Orientation.Vertical,
-            LabelColor = SKColor.Parse("#fff"),
-            LabelTextSize = 24,
-            IsAnimated = false
-        };
-
         InitializeComponent();
         BindingContext = this;
 
@@ -138,6 +110,7 @@ public partial class HistoryTemperaturePage : ContentPage, INotifyPropertyChange
     {
         MainThread.InvokeOnMainThreadAsync(() =>
         {
+            entries.Clear();
             historyList.OrderBy(h => h.timestamp);
 
 
@@ -152,7 +125,24 @@ public partial class HistoryTemperaturePage : ContentPage, INotifyPropertyChange
                 });
             }
 
-            HistoryChart.Entries = entries;
+            HistoryChart = new LineChart
+            {
+                Entries = entries,
+                ValueLabelOption = ValueLabelOption.TopOfElement,
+                ValueLabelTextSize = 24,
+                ValueLabelOrientation = Orientation.Horizontal,
+
+                BackgroundColor = SKColor.FromHsl(0, 0, 0, 0),
+                ShowYAxisLines = true,
+                ShowYAxisText = true,
+                YAxisPosition = Position.Left,
+                YAxisTextPaint = new SKPaint() { Color = SKColor.Parse("#fff"), TextSize = 24 },
+                YAxisLinesPaint = new SKPaint() { Color = SKColor.Parse("#153D8C") },
+                LabelOrientation = Orientation.Vertical,
+                LabelColor = SKColor.Parse("#fff"),
+                LabelTextSize = 24,
+                IsAnimated = false
+            };
         });
     }
 
