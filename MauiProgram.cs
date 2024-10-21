@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Maui.Handlers;
 using Microsoft.Maui.Platform;
 using PI_AQP.Services;
+using SkiaSharp.Views.Maui.Controls.Hosting;
 
 namespace PI_AQP
 {
@@ -14,6 +15,7 @@ namespace PI_AQP
         {
             var builder = MauiApp.CreateBuilder();
             builder
+                .UseSkiaSharp(true)
                 .UseMicrocharts()
                 .UseMauiApp<App>()
                 .UseMauiCommunityToolkit()

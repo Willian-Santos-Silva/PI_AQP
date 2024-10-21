@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PI_AQP.Views.Teste.TestePAge"
+             Title="TestePAge"
+             xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Maui;assembly=LiveChartsCore.SkiaSharpView.Maui">
+    <ScrollView VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Padding="0,0,0,16">
+        <VerticalStackLayout  VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+            <StackLayout Background="{StaticResource Primary}"
+                         Padding="8,16">
+                <!--<HorizontalStackLayout Spacing="8"
+                                       HorizontalOptions="End">
+                    <Button 
+                            BackgroundColor="{StaticResource White}"
+                            TextColor="{StaticResource Primary}"
+                            Text="Histórico"
+                            FontSize="10"
+                            Padding="16,8"></Button>
+                    <Button 
+                            BackgroundColor="{StaticResource Primary}"
+                            TextColor="{StaticResource White}"
+                            BorderColor="White"
+                            BorderWidth="1"
+                            Text="Real Time"
+                            FontSize="10"
+                            Padding="16,8"></Button>
+                </HorizontalStackLayout>-->
+
+                <lvc:CartesianChart x:Name="HistoryChart"
+                            Series="{Binding Series}"
+                            Sections="{Binding Sections}"
+                            XAxes="{Binding XAxes}"
+                            YAxes="{Binding YAxes}"
+                            HeightRequest="300"
+                            ZoomMode="Both"
+                            HorizontalOptions="FillAndExpand">
+                </lvc:CartesianChart>
+            </StackLayout>
+
+            <StackLayout Margin="16, 32" Orientation="Horizontal" Spacing="16">
+                <Frame BackgroundColor="{StaticResource PrimaryDark}"
+                       HorizontalOptions="FillAndExpand"
+                       Padding="8,8,8,16">
+                    <StackLayout Spacing="8">
+                        <Label Text="Min" FontFamily="InterSemiBold" FontSize="Caption" TextColor="{StaticResource Gray300}"></Label>
+
+                        <HorizontalStackLayout>
+                            <Label Text="thermostat" VerticalOptions="Center" FontFamily="GoogleMaterialIcons" FontSize="24" TextColor="{StaticResource Gray300}"></Label>
+                            <Label x:Name="Min"
+                                       VerticalTextAlignment="Center" 
+                                       TextColor="{StaticResource Gray100}"
+                                       FontFamily="InterBold"
+                                       FontSize="24"></Label>
+                        </HorizontalStackLayout>
+                    </StackLayout>
+                </Frame>
+
+                <Frame BackgroundColor="{StaticResource PrimaryDark}"
+                       HorizontalOptions="FillAndExpand"
+                       Padding="8,8,8,16">
+                    <StackLayout Spacing="8">
+                        <Label Text="Max" FontFamily="InterSemiBold" FontSize="Caption" TextColor="{StaticResource Gray300}"></Label>
+
+                        <HorizontalStackLayout>
+                            <Label Text="thermostat" VerticalOptions="Center" FontFamily="GoogleMaterialIcons" FontSize="24" TextColor="{StaticResource Gray300}"></Label>
+                            <Label x:Name="Max"
+                                   VerticalTextAlignment="Center" 
+                                   TextColor="{StaticResource Gray100}"
+                                   FontFamily="InterBold"
+                                   FontSize="24"></Label>
+                        </HorizontalStackLayout>
+                    </StackLayout>
+                </Frame>
+            </StackLayout>
+
+
+            <Grid x:Name="tableHistory">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <Label Text="Data" Grid.Row="0" Grid.Column="0" 
+                        VerticalTextAlignment="Center"
+                        VerticalOptions="Center"
+                        FontFamily="InterBold" 
+                        TextColor="{StaticResource PrimaryDark}"
+                        Padding="24,16"/>
+
+                <Label Text="Valor" Grid.Row="0" Grid.Column="1"
+                        VerticalTextAlignment="Center" 
+                        VerticalOptions="Center"
+                        HorizontalTextAlignment="End"
+                        FontFamily="InterBold" 
+                        TextColor="{StaticResource PrimaryDark}"
+                        Padding="24,16" />
+
+            </Grid>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

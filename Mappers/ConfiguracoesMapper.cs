@@ -24,6 +24,8 @@ namespace PI_AQP.Mapper
         }
         public static ConfiguracoesDTO ToDTO(this Configuracao configuracoes)
         {
+            var utcTime = DateTime.SpecifyKind(configuracoes.dataRTC.Add(configuracoes.timeRTC), DateTimeKind.Utc);
+
             return new ConfiguracoesDTO()
             {
                 min_temperature = configuracoes.min_temperatura,
@@ -33,7 +35,7 @@ namespace PI_AQP.Mapper
                 dosagem_solucao_acida = configuracoes.dosagem_solucao_acida,
                 dosagem_solucao_base = configuracoes.dosagem_solucao_base,
                 tempo_reaplicacao = (long)configuracoes.tempo_reaplicacao.TotalSeconds,
-                rtc = ((DateTimeOffset)configuracoes.dataRTC.Add(configuracoes.timeRTC)).ToUnixTimeSeconds()
+                rtc = ((DateTimeOffset)utcTime).ToUnixTimeSeconds()
             };
         }
     }

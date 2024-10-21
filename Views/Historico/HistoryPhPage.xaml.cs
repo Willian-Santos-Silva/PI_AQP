@@ -1,6 +1,8 @@
 
 
 using Aquaponia.Domain.Entities;
+using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore;
 using Microcharts;
 using PI_AQP.Services;
 using SkiaSharp;
@@ -8,6 +10,8 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
+using LiveChartsCore.SkiaSharpView.Painting;
+using System.Collections.ObjectModel;
 
 namespace PI_AQP.Views.Historico;
 
@@ -36,21 +40,49 @@ public partial class HistoryPhPage : ContentPage, INotifyPropertyChanged
     private BluetoothCaracteristica _historyCaracteristica;
 
 
-    List<HistoryPhDTO> historyList = default!;
-    List<ChartEntry> entries { get; set; }
+    ObservableCollection<HistoryPhDTO> historyList = default!;
 
-    private LineChart _HistoryChart;
-    public LineChart HistoryChart
-    {
-        get { return _HistoryChart; }
-        set
+    public ISeries[] Series { get; set; }
+    public RectangularSection[] Sections { get; set; } = new[] {
+        new RectangularSection
         {
-            _HistoryChart = value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HistoryChart)));
+            Yi = 7.8,
+            Yj = 7.8,
+            Stroke = new SolidColorPaint
+            {
+                Color = SKColor.Parse("#FCD526"),
+                StrokeThickness = 2,
+            }
+        },
+
+        new RectangularSection
+        {
+            Yi = 7.4,
+            Yj = 7.4,
+            Stroke = new SolidColorPaint
+            {
+                Color = SKColor.Parse("#CCAB1F"),
+                StrokeThickness = 2,
+            }
         }
-    }
-    private int page = 0;
-    private int step = 24;
+    };
+    public Axis[] XAxes { get; set; } = new[] {
+        new Axis {
+            Labeler = value => $"{DateTimeOffset.FromUnixTimeSeconds((long)value).DateTime.ToString("dd/MM/yyyy HH:mm")}",
+            LabelsPaint = new SolidColorPaint(SKColor.Parse("#fff")),
+            TextSize = 8,
+        },
+    };
+    public Axis[] YAxes { get; set; } = new[] {
+        new Axis {
+            Labeler = value => $"{value}",
+            LabelsPaint = new SolidColorPaint(SKColor.Parse("#fff")),
+            TextSize = 8,
+            SeparatorsPaint = null
+        }
+    };
+
+
     public HistoryPhPage()
     {
         _device = new() { id = Guid.Parse(Preferences.Get("deviceID_BLE", "")) };
@@ -58,8 +90,7 @@ public partial class HistoryPhPage : ContentPage, INotifyPropertyChanged
         _historyCaracteristica.CallbackOnUpdate(GetHistoryEndpoint);
 
 
-        entries = new List<ChartEntry>();
-        historyList = new List<HistoryPhDTO>();
+        ChartSetup();
 
         InitializeComponent();
         BindingContext = this;
@@ -78,25 +109,28 @@ public partial class HistoryPhPage : ContentPage, INotifyPropertyChanged
                 await DisplayAlert("Erro", e.Message, "Ok");
             }
         });
-
     }
-    public void LoadMore()
+    void ChartSetup()
     {
-        if (historyList.Count > step * page)
+        historyList = new ObservableCollection<HistoryPhDTO>();
+
+        Series = new ISeries[]
         {
-            var newpage = historyList.Skip(step * page).Take(step); // This method means that the data of the step * page item is skipped and the data of another step is obtained.
-            foreach (var item in newpage)
+            new LineSeries<HistoryPhDTO>
             {
-                entries.Add(new(item.ph)
-                {
-                    Label = item.getData().ToString("dd/MM/yyyy HH:mm"),
-                    Color = SKColor.Parse("#fff"),
-                    ValueLabel = item.ph.ToString("N1"),
-                    ValueLabelColor = SKColor.Parse("#fff"),
-                });
-            }
-            page++;
-        }
+                Values = historyList,
+                Mapping = (sample, index) => new(sample.timestamp, sample.ph),
+                Name = "Temperatura",
+                Stroke = new SolidColorPaint(SKColor.Parse("#fff")) { StrokeThickness = 2 },
+                Fill = null,
+                GeometryStroke = new SolidColorPaint(SKColor.Parse("#567df5")){ StrokeThickness = 2 },
+                GeometrySize = 6,
+
+            },
+        };
+
+        XAxes[0].MaxLimit = historyList.Max(x => x.timestamp);
+        XAxes[0].MinLimit = historyList.Max(x => x.timestamp) - (24 * 60 * 60);
     }
     private void GetHistoryEndpoint(CharacteristicBluetoothDTO ble)
     {
@@ -109,18 +143,24 @@ public partial class HistoryPhPage : ContentPage, INotifyPropertyChanged
 
             JsonElement j;
             if (root.TryGetProperty("history", out j))
-                historyList = JsonSerializer.Deserialize<List<HistoryPhDTO>>(j) ?? new List<HistoryPhDTO>();
+                historyList = JsonSerializer.Deserialize<ObservableCollection<HistoryPhDTO>>(j) ?? new ObservableCollection<HistoryPhDTO>();
 
             int min = root.GetProperty("min_ph").GetInt16();
             int max = root.GetProperty("max_ph").GetInt16();
 
             MainThread.InvokeOnMainThreadAsync(() =>
             {
-                HistoryToEntries();
+                ChartSetup();
                 HistoryToTable();
 
                 Min.Text = min.ToString("N1");
                 Max.Text = max.ToString("N1");
+
+                Sections[0].Yj = max;
+                Sections[0].Yi = max;
+
+                Sections[1].Yj = min;
+                Sections[1].Yi = min;
             });
 
         }
@@ -130,44 +170,6 @@ public partial class HistoryPhPage : ContentPage, INotifyPropertyChanged
         }
     }
 
-    public void HistoryToEntries()
-    {
-        MainThread.InvokeOnMainThreadAsync(() =>
-        {
-            historyList.OrderBy(h => h.timestamp);
-
-            foreach (var history in historyList.TakeLast(10))
-            {
-                entries.Add(new(history.ph)
-                {
-                    Label = history.getData().ToString("dd/MM/yyyy HH:mm"),
-                    Color = SKColor.Parse("#fff"),
-                    ValueLabel = history.ph.ToString("N1"),
-                    ValueLabelColor = SKColor.Parse("#fff"),
-                });
-            }
-
-            HistoryChart = new LineChart
-            {
-                Entries = entries,
-                ValueLabelOption = ValueLabelOption.TopOfElement,
-                ValueLabelTextSize = 24,
-                ValueLabelOrientation = Orientation.Horizontal,
-
-                BackgroundColor = SKColor.FromHsl(0, 0, 0, 0),
-                ShowYAxisLines = true,
-                ShowYAxisText = true,
-                YAxisPosition = Position.Left,
-                YAxisTextPaint = new SKPaint() { Color = SKColor.Parse("#fff"), TextSize = 24 },
-                YAxisLinesPaint = new SKPaint() { Color = SKColor.Parse("#153D8C") },
-                LabelOrientation = Orientation.Vertical,
-                LabelColor = SKColor.Parse("#fff"),
-                LabelTextSize = 24,
-                IsAnimated = false,
-                PointMode = PointMode.None
-            };
-        });
-    }
 
     public void HistoryToTable()
     {

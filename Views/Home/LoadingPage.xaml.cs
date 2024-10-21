@@ -20,7 +20,36 @@ public partial class LoadingPage : ContentPage
     {
         if (await CheckAndRequestPermissions())
         {
-            if (Preferences.Get("deviceID_BLE", null) != null)
+
+            if (await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>() == PermissionStatus.Granted)
+            {
+                var location = await Geolocation.GetLastKnownLocationAsync();
+                try
+                {
+                    location = await Geolocation.GetLocationAsync(new GeolocationRequest
+                    {
+                        DesiredAccuracy = GeolocationAccuracy.Medium,
+                        Timeout = TimeSpan.FromSeconds(30)
+                    });
+                }
+                catch (FeatureNotEnabledException)
+                {
+                    MainThread.BeginInvokeOnMainThread(async () =>
+                    {
+                         await DisplayAlert("Serviços de Localização Desativados", "Por favor, habilite os serviços de localização no seu dispositivo.", "OK");
+
+                    });
+                    await Task.Delay(10000);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Erro ao obter localização: {ex.Message}");
+                }
+            }
+
+
+
+        if (Preferences.Get("deviceID_BLE", null) != null)
             {
                 _device = new() { id = Guid.Parse(Preferences.Get("deviceID_BLE", "")) };
 

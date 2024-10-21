@@ -1,8 +1,12 @@
 
 using Aquaponia.Domain.Entities;
+using LiveChartsCore.SkiaSharpView.Painting;
+using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore;
 using Microcharts;
 using PI_AQP.Services;
 using SkiaSharp;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Text;
@@ -32,29 +36,57 @@ public partial class HistoryTemperaturePage : ContentPage, INotifyPropertyChange
     public BluetoothCaracteristica _historyCaracteristica;
 
 
-    List<HistoryTemperatureDTO> historyList = default!;
-    List<ChartEntry> entries = default!;
+    ObservableCollection<HistoryTemperatureDTO> historyList = default!;
 
-    private LineChart _HistoryChart;
-    public LineChart HistoryChart
-    {
-        get { return _HistoryChart; }
-        set
+    public ISeries[] Series { get; set; }
+    public RectangularSection[] Sections { get; set; } = new[] {
+        new RectangularSection
         {
-            _HistoryChart = value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HistoryChart)));
+            Yi = 7.8,
+            Yj = 7.8,
+            Stroke = new SolidColorPaint
+            {
+                Color = SKColor.Parse("#FCD526"),
+                StrokeThickness = 2,
+            }
+        },
+
+        new RectangularSection
+        {
+            Yi = 7.4,
+            Yj = 7.4,
+            Stroke = new SolidColorPaint
+            {
+                Color = SKColor.Parse("#CCAB1F"),
+                StrokeThickness = 2,
+            }
         }
-    }
+    };
+    public Axis[] XAxes { get; set; } = new[] {
+        new Axis {
+            Labeler = value => $"{DateTimeOffset.FromUnixTimeSeconds((long)value).DateTime.ToString("dd/MM/yyyy HH:mm")}",
+            LabelsPaint = new SolidColorPaint(SKColor.Parse("#fff")),
+            TextSize = 8,
+        },
+    };
+    public Axis[] YAxes { get; set; } = new[] {
+        new Axis {
+            Labeler = value => $"{value} °C",
+            LabelsPaint = new SolidColorPaint(SKColor.Parse("#fff")),
+            TextSize = 8,
+            SeparatorsPaint = null
+        }
+    };
+
     public HistoryTemperaturePage()
     {
         _device = new() { id = Guid.Parse(Preferences.Get("deviceID_BLE", "")) };
         _historyCaracteristica = new BluetoothCaracteristica(_device.id, SERVICE_UUID, CHARACTERISTIC_GET_HIST_TEMP_UUID);
         _historyCaracteristica.CallbackOnUpdate(GetHistoryEndpoint);
 
-        entries = new List<ChartEntry>();
-        historyList = new List<HistoryTemperatureDTO>();
+        historyList = new ObservableCollection<HistoryTemperatureDTO>();
 
-
+        ChartSetup();
         InitializeComponent();
         BindingContext = this;
 
@@ -73,6 +105,27 @@ public partial class HistoryTemperaturePage : ContentPage, INotifyPropertyChange
         });
     }
 
+    void ChartSetup()
+    {
+        Series = new ISeries[]
+        {
+            new LineSeries<HistoryTemperatureDTO>
+            {
+                Values = historyList,
+                Mapping = (sample, index) => new(sample.timestamp, sample.temperatura),
+                Name = "Temperatura",
+                Stroke = new SolidColorPaint(SKColor.Parse("#fff")) { StrokeThickness = 2 },
+                Fill = null,
+                GeometryStroke = new SolidColorPaint(SKColor.Parse("#567df5")){ StrokeThickness = 2 },
+                GeometrySize = 6,
+
+            },
+        };
+
+        XAxes[0].MaxLimit = historyList.Max(x => x.timestamp);
+        XAxes[0].MinLimit = historyList.Max(x => x.timestamp) - (24 * 60 * 60);
+    }
+
     public void GetHistoryEndpoint(CharacteristicBluetoothDTO ble)
     {
         try
@@ -84,7 +137,7 @@ public partial class HistoryTemperaturePage : ContentPage, INotifyPropertyChange
 
             JsonElement j;
             if (root.TryGetProperty("history", out j))
-                historyList = JsonSerializer.Deserialize<List<HistoryTemperatureDTO>>(j) ?? new List<HistoryTemperatureDTO>();
+                historyList = JsonSerializer.Deserialize<ObservableCollection<HistoryTemperatureDTO>>(j) ?? new ObservableCollection<HistoryTemperatureDTO>();
 
 
             int min = root.GetProperty("min_temperatura").GetInt16();
@@ -92,11 +145,17 @@ public partial class HistoryTemperaturePage : ContentPage, INotifyPropertyChange
 
             MainThread.InvokeOnMainThreadAsync(() =>
             {
-                HistoryToEntries();
+                ChartSetup();
                 HistoryToTable();
 
                 Min.Text = min.ToString("N1") + "°C";
                 Max.Text = max.ToString("N1") + "°C";
+
+                Sections[0].Yj = max;
+                Sections[0].Yi = max;
+
+                Sections[1].Yj = min;
+                Sections[1].Yi = min;
             });
 
         }
@@ -104,46 +163,6 @@ public partial class HistoryTemperaturePage : ContentPage, INotifyPropertyChange
         {
             MainThread.InvokeOnMainThreadAsync(() => { DisplayAlert("Erro", e.Message, "Ok"); });
         }
-    }
-
-    public void HistoryToEntries()
-    {
-        MainThread.InvokeOnMainThreadAsync(() =>
-        {
-            entries.Clear();
-            historyList.OrderBy(h => h.timestamp);
-
-
-            foreach (var history in historyList)
-            {
-                entries.Add(new(history.temperatura)
-                {
-                    Label = history.getData().ToString("dd/MM/yyyy HH:mm"),
-                    Color = SKColor.Parse("#fff"),
-                    ValueLabel = history.temperatura.ToString("N1") + "°C",
-                    ValueLabelColor = SKColor.Parse("#fff"),
-                });
-            }
-
-            HistoryChart = new LineChart
-            {
-                Entries = entries,
-                ValueLabelOption = ValueLabelOption.TopOfElement,
-                ValueLabelTextSize = 24,
-                ValueLabelOrientation = Orientation.Horizontal,
-
-                BackgroundColor = SKColor.FromHsl(0, 0, 0, 0),
-                ShowYAxisLines = true,
-                ShowYAxisText = true,
-                YAxisPosition = Position.Left,
-                YAxisTextPaint = new SKPaint() { Color = SKColor.Parse("#fff"), TextSize = 24 },
-                YAxisLinesPaint = new SKPaint() { Color = SKColor.Parse("#153D8C") },
-                LabelOrientation = Orientation.Vertical,
-                LabelColor = SKColor.Parse("#fff"),
-                LabelTextSize = 24,
-                IsAnimated = false
-            };
-        });
     }
 
     public void HistoryToTable()
