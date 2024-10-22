@@ -1,3 +1,6 @@
+using Android.Content;
+using Android.Locations;
+using Android.Opengl;
 using Aquaponia.Domain.Entities;
 using Aquaponia.Domain.Interfaces;
 using CommunityToolkit.Maui.Alerts;
@@ -10,46 +13,45 @@ public partial class LoadingPage : ContentPage
 {
     readonly IDevicesConnectionService _devicesServices;
     public DevicesBluetoothDTO _device;
-    public LoadingPage(IDevicesConnectionService devicesServices)
+    private readonly ILocationService _locationService;
+    private readonly IBluetoothService _bleService;
+    public LoadingPage(IDevicesConnectionService devicesServices, ILocationService locationService, IBluetoothService bleService)
     {
+        _locationService = locationService;
         _devicesServices = devicesServices;
+        _bleService = bleService;
+
         InitializeComponent();
+
+        //Task.Run(async () => {
+        //    if (!IsLocationEnabled())
+        //    {
+        //        await Application.Current.MainPage.DisplayAlert("Serviços de Localização Desativados", "Por favor, habilite os serviços de localização no seu dispositivo.", "OK");
+
+        //        AppInfo.ShowSettingsUI();
+        //    }
+        //});
     }
 
-    public async void OnPageAppearing(object sender, EventArgs e)
+    public async Task OnResume()
     {
+        LoadingDescription.Text = "Validando Permissões...";
+
         if (await CheckAndRequestPermissions())
         {
-
-            if (await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>() == PermissionStatus.Granted)
+            if (!_locationService.IsLocationEnabled())
             {
-                var location = await Geolocation.GetLastKnownLocationAsync();
-                try
-                {
-                    location = await Geolocation.GetLocationAsync(new GeolocationRequest
-                    {
-                        DesiredAccuracy = GeolocationAccuracy.Medium,
-                        Timeout = TimeSpan.FromSeconds(30)
-                    });
-                }
-                catch (FeatureNotEnabledException)
-                {
-                    MainThread.BeginInvokeOnMainThread(async () =>
-                    {
-                         await DisplayAlert("Serviços de Localização Desativados", "Por favor, habilite os serviços de localização no seu dispositivo.", "OK");
-
-                    });
-                    await Task.Delay(10000);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Erro ao obter localização: {ex.Message}");
-                }
+                _locationService.OpenLocationSettings();
+                return;
             }
 
+            if (!_bleService.IsBluetoothEnabled())
+            {
+                _bleService.OpenBluetoothSettings();
+                return;
+            }
 
-
-        if (Preferences.Get("deviceID_BLE", null) != null)
+            if (Preferences.Get("deviceID_BLE", null) != null)
             {
                 _device = new() { id = Guid.Parse(Preferences.Get("deviceID_BLE", "")) };
 
@@ -63,6 +65,7 @@ public partial class LoadingPage : ContentPage
                     return;
                 }
             }
+
             MainThread.BeginInvokeOnMainThread(() =>
             {
 #pragma warning disable CS8602
@@ -71,6 +74,12 @@ public partial class LoadingPage : ContentPage
 
             });
         }
+    }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        await OnResume();
     }
 
     #region PERMISSIONS

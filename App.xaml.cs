@@ -1,4 +1,5 @@
-﻿using Aquaponia.Domain.Interfaces;
+﻿using Android.Service.QuickSettings;
+using Aquaponia.Domain.Interfaces;
 using PI_AQP.Views;
 using PI_AQP.Views.Historico;
 
@@ -7,8 +8,12 @@ namespace PI_AQP
     public partial class App : Application
     {
         readonly IDevicesConnectionService _devicesServices;
-        public App(IDevicesConnectionService devicesServices)
+        private readonly ILocationService _locationService;
+        private readonly IBluetoothService _bleService;
+        public App(IDevicesConnectionService devicesServices, ILocationService locationService, IBluetoothService bleService)
         {
+            _locationService = locationService;
+            _bleService = bleService;
             //MainPage = new LoadingPage(_devicesServices);
 
             try
@@ -25,7 +30,7 @@ namespace PI_AQP
 
                 UserAppTheme = AppTheme.Light;
                 InitializeComponent();
-                MainPage = new LoadingPage(_devicesServices);
+                MainPage = new LoadingPage(_devicesServices, _locationService, _bleService);
             }
             catch (Exception ex)
             {
@@ -33,5 +38,14 @@ namespace PI_AQP
                 Console.WriteLine($"Erro ao inicializar o Shell: {ex.Message}");
             }
         }
+        protected override async void OnResume()
+        {
+            if (MainPage is LoadingPage loadingPage)
+            {
+                await loadingPage.OnResume();
+            }
+
+        }
     }
+
 }

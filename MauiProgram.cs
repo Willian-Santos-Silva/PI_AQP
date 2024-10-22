@@ -35,6 +35,8 @@ namespace PI_AQP
             StylingEntry();
 
             builder.Services.AddSingleton<IDevicesConnectionService, BluetoothClientService>();
+            builder.Services.AddSingleton<ILocationService, PI_AQP.Platforms.Android.Services.LocationService>();
+            builder.Services.AddSingleton<IBluetoothService, PI_AQP.Platforms.Android.Services.BluetoothService>();
 #if DEBUG
             builder.Logging.AddDebug();
 #endif
