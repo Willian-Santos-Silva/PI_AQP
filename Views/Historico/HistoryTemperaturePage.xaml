@@ -14,24 +14,26 @@
     <ScrollView VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Padding="0,0,0,16">
         <VerticalStackLayout  VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
             <StackLayout Background="{StaticResource Primary}"
-                     Padding="8,16">
-                <!--<HorizontalStackLayout Spacing="8"
+                         Padding="8,16">
+                <HorizontalStackLayout Spacing="8"
                                    HorizontalOptions="End">
-                <Button 
-                        BackgroundColor="{StaticResource White}"
-                        TextColor="{StaticResource Primary}"
-                        Text="Histórico"
-                        FontSize="10"
-                        Padding="16,8"></Button>
-                <Button 
-                        BackgroundColor="{StaticResource Primary}"
-                        TextColor="{StaticResource White}"
-                        BorderColor="White"
-                        BorderWidth="1"
-                        Text="Real Time"
-                        FontSize="10"
-                        Padding="16,8"></Button>
-            </HorizontalStackLayout>-->
+                    <Button x:Name="HistoryModeButton"
+                            Text="Histórico"
+                            FontSize="10"
+                            Padding="16,8"
+                            IsEnabled="False"
+                            Clicked="HistoryMode">
+                    </Button>
+
+                    <Button x:Name="RealTimeModeButton" 
+                            BorderWidth="1"
+                            Text="Real Time"
+                            FontSize="10"
+                            Padding="16,8"
+                            IsEnabled="True"
+                            Clicked="RealTimeMode">
+                    </Button>
+                </HorizontalStackLayout>
 
                 <lvc:CartesianChart x:Name="HistoryChart"
                         Series="{Binding Series}"
@@ -39,8 +41,10 @@
                         XAxes="{Binding XAxes}"
                         YAxes="{Binding YAxes}"
                         HeightRequest="300"
-                        ZoomMode="Both"
-                        HorizontalOptions="FillAndExpand">
+                        ZoomMode="X"
+                        ZoomingSpeed="2"
+                        HorizontalOptions="CenterAndExpand">
+                        <!--ZoomMode="Both"-->
                 </lvc:CartesianChart>
             </StackLayout>
 

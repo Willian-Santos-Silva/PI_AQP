@@ -3,18 +3,14 @@
 using Aquaponia.Domain.Entities;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore;
-using Microcharts;
 using PI_AQP.Services;
 using SkiaSharp;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
 using LiveChartsCore.SkiaSharpView.Painting;
 using System.Collections.ObjectModel;
 
 namespace PI_AQP.Views.Historico;
-
 
 public class HistoryPhDTO
 {
@@ -26,23 +22,21 @@ public class HistoryPhDTO
     }
 }
 
-public partial class HistoryPhPage : ContentPage, INotifyPropertyChanged
+public partial class HistoryPhPage : ContentPage
 {
-    public event PropertyChangedEventHandler PropertyChanged;
-
     const string SERVICE_UUID = "02be3f08-b74b-4038-aaa4-5020d1582eba";
     const string CHARACTERISTIC_GET_HIST_PH_UUID = "c496fa32-b11a-460b-8dd3-1aeeb7c7f0ae";
 
-    Task t;
-    TaskCompletionSource<bool> tComplete;
+    const string CHARACTERISTIC_INFO_UUID = "eeaaf2ad-5264-47a1-a49f-5b274ab1a0fe";
 
     private DevicesBluetoothDTO _device;
     private BluetoothCaracteristica _historyCaracteristica;
+    private BluetoothCaracteristica _systemInfoCaracteristica;
 
 
     ObservableCollection<HistoryPhDTO> historyList = default!;
 
-    public ISeries[] Series { get; set; }
+    public ObservableCollection<ISeries> Series { get; set; }
     public RectangularSection[] Sections { get; set; } = new[] {
         new RectangularSection
         {
@@ -71,6 +65,10 @@ public partial class HistoryPhPage : ContentPage, INotifyPropertyChanged
             Labeler = value => $"{DateTimeOffset.FromUnixTimeSeconds((long)value).DateTime.ToString("dd/MM/yyyy HH:mm")}",
             LabelsPaint = new SolidColorPaint(SKColor.Parse("#fff")),
             TextSize = 8,
+            MaxLimit = 10,
+            MinLimit = 0,
+            AnimationsSpeed = TimeSpan.FromMilliseconds(0),
+            SeparatorsPaint = new SolidColorPaint(SKColors.Black.WithAlpha(100)),
         },
     };
     public Axis[] YAxes { get; set; } = new[] {
@@ -78,7 +76,9 @@ public partial class HistoryPhPage : ContentPage, INotifyPropertyChanged
             Labeler = value => $"{value}",
             LabelsPaint = new SolidColorPaint(SKColor.Parse("#fff")),
             TextSize = 8,
-            SeparatorsPaint = null
+            SeparatorsPaint = null,
+            MaxLimit = 24,
+            MinLimit = 0,
         }
     };
 
@@ -88,6 +88,9 @@ public partial class HistoryPhPage : ContentPage, INotifyPropertyChanged
         _device = new() { id = Guid.Parse(Preferences.Get("deviceID_BLE", "")) };
         _historyCaracteristica = new BluetoothCaracteristica(_device.id, SERVICE_UUID, CHARACTERISTIC_GET_HIST_PH_UUID);
         _historyCaracteristica.CallbackOnUpdate(GetHistoryEndpoint);
+
+        _systemInfoCaracteristica = new BluetoothCaracteristica(_device.id, SERVICE_UUID, CHARACTERISTIC_INFO_UUID);
+        _systemInfoCaracteristica.CallbackOnUpdate(SystemInformationEndpoint);
 
         historyList = new ObservableCollection<HistoryPhDTO>();
 
@@ -111,9 +114,10 @@ public partial class HistoryPhPage : ContentPage, INotifyPropertyChanged
             }
         });
     }
+
     void ChartSetup()
     {
-        Series = new ISeries[]
+        Series = new ObservableCollection<ISeries>
         {
             new LineSeries<HistoryPhDTO>
             {
@@ -127,12 +131,14 @@ public partial class HistoryPhPage : ContentPage, INotifyPropertyChanged
 
             },
         };
+
         if (historyList.Count() > 0)
         {
             XAxes[0].MaxLimit = historyList.Max(x => x.timestamp);
             XAxes[0].MinLimit = historyList.Max(x => x.timestamp) - (24 * 60 * 60);
         }
     }
+
     private void GetHistoryEndpoint(CharacteristicBluetoothDTO ble)
     {
         try
@@ -159,6 +165,7 @@ public partial class HistoryPhPage : ContentPage, INotifyPropertyChanged
                     XAxes[0].MinLimit = historyList.Max(x => x.timestamp) - (24 * 60 * 60);
 
 
+                    YAxes[0].MaxLimit = 24;
                     YAxes[0].MinLimit = max;
                 }
 
@@ -181,6 +188,96 @@ public partial class HistoryPhPage : ContentPage, INotifyPropertyChanged
         }
     }
 
+    public void SystemInformationEndpoint(CharacteristicBluetoothDTO ble)
+    {
+        try
+        {
+            string response = Encoding.UTF8.GetString(ble.Value);
+            SystemInformationDTO dto = new SystemInformationDTO();
+            using var document = JsonDocument.Parse(response);
+            var root = document.RootElement;
+
+            dto.ph = root.GetProperty("ph").GetDouble();
+
+            MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                historyList.Add(new HistoryPhDTO() { ph = (float)dto.ph, timestamp = DateTimeOffset.Now.Add(TimeZoneInfo.Local.BaseUtcOffset).ToUnixTimeSeconds() });
+                if (historyList.Count > 300) historyList.RemoveAt(0);
+                Series[0].Values = historyList;
+
+                if (historyList.Count() > 0)
+                {
+                    XAxes[0].MaxLimit = historyList.Max(x => x.timestamp);
+                    XAxes[0].MinLimit = historyList.Min(x => x.timestamp);
+                }
+
+            });
+        }
+        catch (Exception e)
+        {
+            MainThread.InvokeOnMainThreadAsync(() => { DisplayAlert("Erro", e.Message, "Ok"); });
+        }
+    }
+
+    public async void RealTimeMode(object sender, EventArgs args)
+    {
+        historyList.Clear();
+        await _historyCaracteristica.OnPauseUpdate();
+
+        await _systemInfoCaracteristica.StartService();
+        await _systemInfoCaracteristica.OnStartUpdate();
+
+        ToggleRealTimeButton();
+        ToggleHistoryButton();
+
+        HistoryChart.ZoomMode = LiveChartsCore.Measure.ZoomAndPanMode.None;
+    }
+
+    public async void HistoryMode(object sender, EventArgs args)
+    {
+        historyList.Clear();
+
+        await _systemInfoCaracteristica.OnPauseUpdate();
+        await _historyCaracteristica.OnStartUpdate();
+
+
+        ToggleRealTimeButton();
+        ToggleHistoryButton();
+
+        HistoryChart.ZoomMode = LiveChartsCore.Measure.ZoomAndPanMode.Both;
+
+
+        await _historyCaracteristica.Request();
+    }
+
+    protected void ToggleRealTimeButton()
+    {
+        RealTimeModeButton.IsEnabled = !RealTimeModeButton.IsEnabled;
+        if (!RealTimeModeButton.IsEnabled)
+        {
+            RealTimeModeButton.TextColor = Color.FromHex("#1E58CC");
+            RealTimeModeButton.BackgroundColor = Colors.White;
+        }
+        else
+        {
+            RealTimeModeButton.TextColor = Colors.White;
+            RealTimeModeButton.BackgroundColor = Color.FromHex("#1E58CC");
+        }
+    }
+    protected void ToggleHistoryButton()
+    {
+        HistoryModeButton.IsEnabled = !HistoryModeButton.IsEnabled;
+        if (!HistoryModeButton.IsEnabled)
+        {
+            HistoryModeButton.TextColor = Color.FromHex("#1E58CC");
+            HistoryModeButton.BackgroundColor = Colors.White;
+        }
+        else
+        {
+            HistoryModeButton.TextColor = Colors.White;
+            HistoryModeButton.BackgroundColor = Color.FromHex("#1E58CC");
+        }
+    }
 
     public void HistoryToTable()
     {

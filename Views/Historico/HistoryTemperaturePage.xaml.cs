@@ -32,13 +32,17 @@ public partial class HistoryTemperaturePage : ContentPage, INotifyPropertyChange
     const string SERVICE_UUID = "02be3f08-b74b-4038-aaa4-5020d1582eba";
     const string CHARACTERISTIC_GET_HIST_TEMP_UUID = "23ffac66-d0f9-4dbb-bb10-2b92d3664760";
 
+    const string CHARACTERISTIC_INFO_UUID = "eeaaf2ad-5264-47a1-a49f-5b274ab1a0fe";
+
+
     public DevicesBluetoothDTO _device;
     public BluetoothCaracteristica _historyCaracteristica;
+    public BluetoothCaracteristica _systemInfoCaracteristica;
 
 
     ObservableCollection<HistoryTemperatureDTO> historyList = default!;
 
-    public ISeries[] Series { get; set; }
+    public ObservableCollection<ISeries> Series { get; set; }
     public RectangularSection[] Sections { get; set; } = new[] {
         new RectangularSection
         {
@@ -67,6 +71,8 @@ public partial class HistoryTemperaturePage : ContentPage, INotifyPropertyChange
             Labeler = value => $"{DateTimeOffset.FromUnixTimeSeconds((long)value).DateTime.ToString("dd/MM/yyyy HH:mm")}",
             LabelsPaint = new SolidColorPaint(SKColor.Parse("#fff")),
             TextSize = 8,
+            AnimationsSpeed = TimeSpan.FromMilliseconds(0),
+            SeparatorsPaint = new SolidColorPaint(SKColors.Black.WithAlpha(100)),
         },
     };
     public Axis[] YAxes { get; set; } = new[] {
@@ -74,7 +80,9 @@ public partial class HistoryTemperaturePage : ContentPage, INotifyPropertyChange
             Labeler = value => $"{value} °C",
             LabelsPaint = new SolidColorPaint(SKColor.Parse("#fff")),
             TextSize = 8,
-            SeparatorsPaint = null
+            SeparatorsPaint = null,
+            MaxLimit = 50,
+            MinLimit = 0,
         }
     };
 
@@ -83,6 +91,9 @@ public partial class HistoryTemperaturePage : ContentPage, INotifyPropertyChange
         _device = new() { id = Guid.Parse(Preferences.Get("deviceID_BLE", "")) };
         _historyCaracteristica = new BluetoothCaracteristica(_device.id, SERVICE_UUID, CHARACTERISTIC_GET_HIST_TEMP_UUID);
         _historyCaracteristica.CallbackOnUpdate(GetHistoryEndpoint);
+
+        _systemInfoCaracteristica = new BluetoothCaracteristica(_device.id, SERVICE_UUID, CHARACTERISTIC_INFO_UUID);
+        _systemInfoCaracteristica.CallbackOnUpdate(SystemInformationEndpoint);
 
         historyList = new ObservableCollection<HistoryTemperatureDTO>();
 
@@ -105,9 +116,98 @@ public partial class HistoryTemperaturePage : ContentPage, INotifyPropertyChange
         });
     }
 
+    public async void RealTimeMode(object sender, EventArgs args)
+    {
+        historyList.Clear();
+        await _historyCaracteristica.OnPauseUpdate();
+
+        await _systemInfoCaracteristica.StartService();
+        await _systemInfoCaracteristica.OnStartUpdate();
+
+        ToggleRealTimeButton();
+        ToggleHistoryButton();
+
+        HistoryChart.ZoomMode = LiveChartsCore.Measure.ZoomAndPanMode.None;
+    }
+
+    public async void HistoryMode(object sender, EventArgs args)
+    {
+        historyList.Clear();
+
+        await _systemInfoCaracteristica.OnPauseUpdate();
+        await _historyCaracteristica.OnStartUpdate();
+
+        ToggleRealTimeButton();
+        ToggleHistoryButton();
+
+        HistoryChart.ZoomMode = LiveChartsCore.Measure.ZoomAndPanMode.Both;
+
+        await _historyCaracteristica.Request();
+    }
+
+    protected void ToggleRealTimeButton()
+    {
+        RealTimeModeButton.IsEnabled = !RealTimeModeButton.IsEnabled;
+        if (!RealTimeModeButton.IsEnabled)
+        {
+            RealTimeModeButton.TextColor = Color.FromHex("#1E58CC");
+            RealTimeModeButton.BackgroundColor = Colors.White;
+        }
+        else
+        {
+            RealTimeModeButton.TextColor = Colors.White;
+            RealTimeModeButton.BackgroundColor = Color.FromHex("#1E58CC");
+        }
+    }
+    protected void ToggleHistoryButton()
+    {
+        HistoryModeButton.IsEnabled = !HistoryModeButton.IsEnabled;
+        if (!HistoryModeButton.IsEnabled)
+        {
+            HistoryModeButton.TextColor = Color.FromHex("#1E58CC");
+            HistoryModeButton.BackgroundColor = Colors.White;
+        }
+        else
+        {
+            HistoryModeButton.TextColor = Colors.White;
+            HistoryModeButton.BackgroundColor = Color.FromHex("#1E58CC");
+        }
+    }
+
+    public void SystemInformationEndpoint(CharacteristicBluetoothDTO ble)
+    {
+        try
+        {
+            string response = Encoding.UTF8.GetString(ble.Value);
+            SystemInformationDTO dto = new SystemInformationDTO();
+            using var document = JsonDocument.Parse(response);
+            var root = document.RootElement;
+
+            dto.temperatura = root.GetProperty("temperatura").GetDouble();
+
+            MainThread.InvokeOnMainThreadAsync(() =>
+            {
+
+            historyList.Add(new HistoryTemperatureDTO() { temperatura = (float)(dto.temperatura), timestamp = DateTimeOffset.Now.Add(TimeZoneInfo.Local.BaseUtcOffset).ToUnixTimeSeconds() });
+            if (historyList.Count > 300) historyList.RemoveAt(0);
+                Series[0].Values = historyList;
+
+                if (historyList.Count() > 0)
+                {
+                    XAxes[0].MaxLimit = historyList.Max(x => x.timestamp);
+                    XAxes[0].MinLimit = historyList.Min(x => x.timestamp);
+                }
+            });
+        }
+        catch (Exception e)
+        {
+            MainThread.InvokeOnMainThreadAsync(() => { DisplayAlert("Erro", e.Message, "Ok"); });
+        }
+    }
+
     void ChartSetup()
     {
-        Series = new ISeries[]
+        Series = new ObservableCollection<ISeries>
         {
             new LineSeries<HistoryTemperatureDTO>
             {
@@ -154,7 +254,8 @@ public partial class HistoryTemperaturePage : ContentPage, INotifyPropertyChange
                 {
                     XAxes[0].MaxLimit = historyList.Max(x => x.timestamp);
                     XAxes[0].MinLimit = historyList.Max(x => x.timestamp) - (24 * 60 * 60);
-                      
+
+                    YAxes[0].MaxLimit = 50;
                     YAxes[0].MinLimit = max;
                 }
                 HistoryToTable();
