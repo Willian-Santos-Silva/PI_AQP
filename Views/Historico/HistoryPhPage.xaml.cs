@@ -89,6 +89,7 @@ public partial class HistoryPhPage : ContentPage, INotifyPropertyChanged
         _historyCaracteristica = new BluetoothCaracteristica(_device.id, SERVICE_UUID, CHARACTERISTIC_GET_HIST_PH_UUID);
         _historyCaracteristica.CallbackOnUpdate(GetHistoryEndpoint);
 
+        historyList = new ObservableCollection<HistoryPhDTO>();
 
         ChartSetup();
 
@@ -112,15 +113,13 @@ public partial class HistoryPhPage : ContentPage, INotifyPropertyChanged
     }
     void ChartSetup()
     {
-        historyList = new ObservableCollection<HistoryPhDTO>();
-
         Series = new ISeries[]
         {
             new LineSeries<HistoryPhDTO>
             {
                 Values = historyList,
                 Mapping = (sample, index) => new(sample.timestamp, sample.ph),
-                Name = "Temperatura",
+                Name = "PH",
                 Stroke = new SolidColorPaint(SKColor.Parse("#fff")) { StrokeThickness = 2 },
                 Fill = null,
                 GeometryStroke = new SolidColorPaint(SKColor.Parse("#567df5")){ StrokeThickness = 2 },
@@ -128,16 +127,18 @@ public partial class HistoryPhPage : ContentPage, INotifyPropertyChanged
 
             },
         };
-
-        XAxes[0].MaxLimit = historyList.Max(x => x.timestamp);
-        XAxes[0].MinLimit = historyList.Max(x => x.timestamp) - (24 * 60 * 60);
+        if (historyList.Count() > 0)
+        {
+            XAxes[0].MaxLimit = historyList.Max(x => x.timestamp);
+            XAxes[0].MinLimit = historyList.Max(x => x.timestamp) - (24 * 60 * 60);
+        }
     }
     private void GetHistoryEndpoint(CharacteristicBluetoothDTO ble)
     {
         try
         {
             string response = Encoding.UTF8.GetString(ble.Value);
-            HistoryTemperatureDTO dto = new HistoryTemperatureDTO();
+            HistoryPhDTO dto = new HistoryPhDTO();
             using var document = JsonDocument.Parse(response);
             var root = document.RootElement;
 
@@ -150,7 +151,17 @@ public partial class HistoryPhPage : ContentPage, INotifyPropertyChanged
 
             MainThread.InvokeOnMainThreadAsync(() =>
             {
-                ChartSetup();
+                Series[0].Values = historyList;
+
+                if (historyList.Count() > 0)
+                {
+                    XAxes[0].MaxLimit = historyList.Max(x => x.timestamp);
+                    XAxes[0].MinLimit = historyList.Max(x => x.timestamp) - (24 * 60 * 60);
+
+
+                    YAxes[0].MinLimit = max;
+                }
+
                 HistoryToTable();
 
                 Min.Text = min.ToString("N1");

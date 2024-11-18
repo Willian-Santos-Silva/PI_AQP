@@ -122,8 +122,11 @@ public partial class HistoryTemperaturePage : ContentPage, INotifyPropertyChange
             },
         };
 
-        XAxes[0].MaxLimit = historyList.Max(x => x.timestamp);
-        XAxes[0].MinLimit = historyList.Max(x => x.timestamp) - (24 * 60 * 60);
+        if (historyList.Count() > 0)
+        {
+            XAxes[0].MaxLimit = historyList.Max(x => x.timestamp);
+            XAxes[0].MinLimit = historyList.Max(x => x.timestamp) - (24 * 60 * 60);
+        }
     }
 
     public void GetHistoryEndpoint(CharacteristicBluetoothDTO ble)
@@ -145,7 +148,15 @@ public partial class HistoryTemperaturePage : ContentPage, INotifyPropertyChange
 
             MainThread.InvokeOnMainThreadAsync(() =>
             {
-                ChartSetup();
+                Series[0].Values = historyList;
+
+                if (historyList.Count() > 0)
+                {
+                    XAxes[0].MaxLimit = historyList.Max(x => x.timestamp);
+                    XAxes[0].MinLimit = historyList.Max(x => x.timestamp) - (24 * 60 * 60);
+                      
+                    YAxes[0].MinLimit = max;
+                }
                 HistoryToTable();
 
                 Min.Text = min.ToString("N1") + "°C";
